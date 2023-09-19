@@ -23,6 +23,10 @@ class ProfileController extends Controller
             'status' => session('status'),
         ]);
     }
+    public function userin()
+    {
+        return Auth::user();
+    }
 
     /**
      * Update the user's profile information.

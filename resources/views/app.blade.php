@@ -7,15 +7,33 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="../icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
+        <link rel="stylesheet" href="assets/plugins/datatables/datatables.min.css">
+        <link rel="stylesheet" href="assets/plugins/feather/feather.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    <body>
         @inertia
+        <script src="assets/js/jquery-3.6.1.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/feather.min.js"></script>
+<script src="assets/js/jquery.slimscroll.js"></script>
+<script src="assets/js/select2.min.js"></script>
+<script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="assets/plugins/datatables/datatables.min.js"></script>
+<script src="assets/js/jquery.waypoints.js"></script>
+<script src="assets/js/jquery.counterup.min.js"></script>
+<script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+<script src="assets/plugins/apexchart/chart-data.js"></script>
+<script src="assets/js/app.js"></script>
     </body>
 </html>
