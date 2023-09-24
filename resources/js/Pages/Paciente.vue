@@ -16,7 +16,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Head title="Enfermera" /> 
+    <Head title="Paciente" /> 
     <Menus :menuname="componentName"> 
     <div class="content">
         <div class="page-header">
@@ -25,7 +25,7 @@ onMounted(() => {
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"> <Link   :href="route('dashboard')"> Dashboard </Link></li>
                         <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                        <li class="breadcrumb-item active">Enfermera</li>
+                        <li class="breadcrumb-item active">Paciente</li>
                     </ul>
                 </div>
             </div>

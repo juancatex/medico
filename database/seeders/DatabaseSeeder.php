@@ -22,8 +22,9 @@ class DatabaseSeeder extends Seeder
         DB::table('rols')->insert(['idrol'=>1,'namerol'=>'Administrador','descripcionrol'=>'Administrador']);
         DB::table('rols')->insert(['idrol'=>2,'namerol'=>'Doctor','descripcionrol'=>'Doctor']);
         DB::table('rols')->insert(['idrol'=>3,'namerol'=>'Enfermera','descripcionrol'=>'Enfermera']); 
+        DB::table('rols')->insert(['idrol'=>4,'namerol'=>'Paciente','descripcionrol'=>'Paciente']); 
 
-        DB::table('menus')->insert(['idmenu'=>1,'nommenu'=>'Gestion de Usuarios','logo'=>'fa fa-users']); 
+        DB::table('menus')->insert(['idmenu'=>1,'nommenu'=>'Usuarios','logo'=>'fa fa-users']); 
         DB::table('menus')->insert(['idmenu'=>2,'nommenu'=>'Control Prenatal','logo'=>'fa fa-edit']);
         DB::table('menus')->insert(['idmenu'=>3,'nommenu'=>'Gestacion Actual','logo'=>'fa fa-female']);
         DB::table('menus')->insert(['idmenu'=>4,'nommenu'=>'Antecedentes','logo'=>'fa fa-list']);
@@ -37,13 +38,16 @@ class DatabaseSeeder extends Seeder
         DB::table('rolmenus')->insert(['idrol'=>1,'idmenu'=>5]);
         DB::table('rolmenus')->insert(['idrol'=>1,'idmenu'=>6]);
 
-        DB::table('vistas')->insert(['idv'=>1,'nomvista'=>'Enfermeras','nomvue'=>'Enfermera','ruta'=>'Enfermera']);
+        DB::table('vistas')->insert(['idv'=>1,'nomvista'=>'Enfermeras','nomvue'=>'Enfermera','ruta'=>'Enfermeras']);
+        DB::table('vistas')->insert(['idv'=>2,'nomvista'=>'Pacientes','nomvue'=>'Paciente','ruta'=>'Pacientes']);
+        DB::table('vistas')->insert(['idv'=>3,'nomvista'=>'Doctores','nomvue'=>'Doctor','ruta'=>'Doctores']);
 
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>1]);
+        DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>2]);
+        DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>3]);
 
         
-
-        
+ 
 
         $user = new \App\Models\User(); 
         $user->name = 'Juan Perez Camacho'; 

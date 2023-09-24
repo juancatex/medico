@@ -11562,7 +11562,7 @@ textarea.form-control {
         top: 0;
         width: 60px;
         z-index: 10;
-        transform: translateY(40%);
+        /* transform: translateY(40%); */
     }
 
     .slide-nav .page-wrapper {
@@ -12555,11 +12555,12 @@ textarea.form-control {
         min-width: auto
     }
 }
-.bselect a{
+.bselect .puntero{
     color: white !important;
     background-color: #2196F3;
     box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
 }
-.bselect .menu-side{
+.bselect i{
     background: rgb(255 255 255 / 75%) !important;
+    color: dimgray;
 }

@@ -36,6 +36,26 @@ class ProfileController extends Controller
             'lista' =>  $enfermeras
         ]);
     }
+    public function listarPaciente(Request $request): Response
+    {
+        $Pacientes= User::where('activo',1)
+        ->where('idrol',4)
+        ->orderBy('name')
+        ->paginate(10);  
+        return Inertia::render('Paciente', [ 
+            'lista' =>  $Pacientes
+        ]);
+    }
+    public function listarDoctor(Request $request): Response
+    {
+        $Pacientes= User::where('activo',1)
+        ->where('idrol',2)
+        ->orderBy('name')
+        ->paginate(10);  
+        return Inertia::render('Doctor', [ 
+            'lista' =>  $Pacientes
+        ]);
+    }
     public function userin()
     {
         $Rolmenu= Rolmenu::select('menus.idmenu','menus.nommenu','menus.logo')

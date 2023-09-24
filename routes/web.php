@@ -42,8 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userin', [ProfileController::class, 'userin'])->name('userin');
 
-    Route::post('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermera');
-    Route::post('/GuardarEnfermera', [ProfileController::class, 'storeEnfermera'])->name('GuardarEnfermera');
+    Route::get('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermeras'); 
+    Route::get('/Paciente', [ProfileController::class, 'listarPaciente'])->name('Pacientes'); 
+    Route::get('/Doctor', [ProfileController::class, 'listarDoctor'])->name('Doctores'); 
 });
 
 require __DIR__.'/auth.php';

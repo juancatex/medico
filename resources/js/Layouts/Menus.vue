@@ -12,7 +12,7 @@ const menus=ref({});
 function getdata(){ 
     axios.get("userin").then(function (response) {  
         nombre.value=response.data.user; 
-        menus.value=response.data.menus;  
+        menus.value=response.data.menus;   
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -20,11 +20,15 @@ function getdata(){
 }
 
 function init() { 
-       
-         $('#sidebar-menu ul li.submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
+    setTimeout(function(){ 
+    var evento=$('#sidebar-menu ul li.submenu a.active').parents('li:last').addClass('bselect').children('a:first').addClass('active').attr('id');
+    if (evento !== undefined) {
+        clickevento(evento);
+    } 
+}, 800);
+ 
 }
-function clickevento(menu){
-    console.log("object"+$('#'+menu).hasClass('subdrop'));
+function clickevento(menu){  
            if (!$('#'+menu).hasClass('subdrop')) {
                 $('ul', $('#'+menu).parents('ul:first')).slideUp(350);
                 $('a', $('#'+menu).parents('ul:first')).removeClass('subdrop');
@@ -35,11 +39,10 @@ function clickevento(menu){
                 $('#'+menu).next('ul').slideUp(350);
             }
 }
-
-onMounted(() => {
-    console.log("entroo");
+ 
+onMounted(async () => { 
     init();
-});
+})
 
 onBeforeMount(() => {
     getdata();
@@ -92,19 +95,17 @@ onBeforeMount(() => {
                         <li class="menu-title">Menu</li>
                          
 
-                        <li class="submenu" v-for="(item, index) in menus" :key="item.idmenu" >
-                            <a href="#" @click.prevent="clickevento('menu'+item.idmenu)" :id="'menu'+item.idmenu"><i :class="item.logo"></i> <span> {{item.nommenu}} </span> <span
+                        <li class="submenu" v-for="item in menus" :key="item.idmenu" >
+                            <a href="#" @click.prevent="clickevento('menu'+item.idmenu)" :id="'menu'+item.idmenu" class="puntero"><i :class="item.logo"></i> <span> {{item.nommenu}} </span> <span
                                     class="menu-arrow"></span></a>
                             <ul style="display: none;">
-                                <li><a href="expense-reports.html"> Expense Report </a></li>
-                                <li><a href="invoice-reports.html"> Invoice Report </a></li>
+                                <li v-for="vista in item.vistas" :key="'v'+vista.idv">
+                                    <Link :href="route(vista.ruta)" :class="vista.nomvue==menuname?'active':''">{{ vista.nomvista }}</Link> </li> 
                             </ul>
                         </li>
   
                     </ul>
-                    <div class="logout-btn">
-                         <Link :href="route('logout')" method="post" ><span class="menu-side"><img src="assets/img/icons/logout.svg"  alt=""></span> <span>Salir del sistema</span></Link> 
-                    </div>
+                    
                 </div>
             </div>
         </div>

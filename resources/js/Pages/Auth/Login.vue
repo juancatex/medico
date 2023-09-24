@@ -3,7 +3,7 @@ import Checkbox from '@/Components/Checkbox.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-
+import {ref} from 'vue'; 
 defineProps({
     canResetPassword: {
         type: Boolean,
@@ -12,13 +12,21 @@ defineProps({
         type: String,
     },
 });
-
+const passwordtype=ref('password');
 const form = useForm({
     email: '',
     password: '',
     remember: false,
 });
-
+function verpass(){
+    $('#showeye').toggleClass("feather-eye-off feather-eye");
+            
+            if (passwordtype.value== "password") {
+                passwordtype.value="text";
+            } else {
+                passwordtype.value="password";
+            }
+}
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
@@ -73,7 +81,7 @@ const submit = () => {
                                            
                                             <TextInput
                                                 id="password"
-                                                type="password"
+                                                :type="passwordtype"
                                                 class="form-control pass-input"
                                                 v-model="form.password"
                                                 required
@@ -83,7 +91,7 @@ const submit = () => {
                                             <h6 v-show="form.errors.password" class="text-danger p-1">
                                                     {{form.errors.password}}
                                              </h6> 
-                                            <span class="profile-views feather-eye-off toggle-password"></span>
+                                            <span id="showeye"  @click="verpass" class="profile-views feather-eye-off toggle-password"></span>
                                         </div>
                                         <div class="forgotpass">
                                             <div class="remember-me">
