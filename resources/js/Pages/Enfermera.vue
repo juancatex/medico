@@ -3,11 +3,8 @@ import { Head,Link } from '@inertiajs/vue3';
 import Menus from '@/Layouts/Menus.vue';
 import {getCurrentInstance,onMounted} from 'vue'; 
 const props =defineProps({ 
-    time: {
-        type: String,
-    },  
-    name: {
-        type: String,
+    lista: {
+        type: Object,
     }  
 });
 const componentName = getCurrentInstance()?.type.__name
@@ -20,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Head title="Dashboard" /> 
+    <Head title="Enfermera" /> 
     <Menus :menuname="componentName"> 
     <div class="content">
         <div class="page-header">
@@ -29,7 +26,7 @@ onMounted(() => {
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"> <Link   :href="route('dashboard')"> Dashboard </Link></li>
                         <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                        <li class="breadcrumb-item active">Admin Dashboard</li>
+                        <li class="breadcrumb-item active">Enfermera</li>
                     </ul>
                 </div>
             </div>

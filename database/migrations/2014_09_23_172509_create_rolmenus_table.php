@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
+        Schema::create('rolmenus', function (Blueprint $table) {
+            $table->increments('idrolmenu');
             $table->integer('idrol')->unsigned(); 
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->boolean('activo')->default(1);
+            $table->integer('idmenu')->unsigned();   
             $table->timestamps();
             $table->foreign('idrol')->references('idrol')->on('rols');
+            $table->foreign('idmenu')->references('idmenu')->on('menus');
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('rolmenus');
     }
 };

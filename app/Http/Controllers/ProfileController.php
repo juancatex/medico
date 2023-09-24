@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
+use App\Models\Rolmenu;
+use App\Models\MenuVista;
 
 class ProfileController extends Controller
 {
@@ -23,9 +26,41 @@ class ProfileController extends Controller
             'status' => session('status'),
         ]);
     }
+    public function listarEnfermera(Request $request): Response
+    {
+        $enfermeras= User::where('activo',1)
+        ->where('idrol',3)
+        ->orderBy('name')
+        ->paginate(10);  
+        return Inertia::render('Enfermera', [ 
+            'lista' =>  $enfermeras
+        ]);
+    }
     public function userin()
     {
-        return Auth::user();
+        $Rolmenu= Rolmenu::select('menus.idmenu','menus.nommenu','menus.logo')
+        ->join("menus","menus.idmenu","=","rolmenus.idmenu")
+        ->where('rolmenus.idrol',Auth::user()->idrol) 
+        ->orderBy('rolmenus.idmenu')
+        ->get();
+        foreach($Rolmenu as $menus) 
+        { 
+            $menus->vistas= MenuVista::select('vistas.*')
+            ->join("vistas","vistas.idv","=","menu_vistas.idv")
+            ->where('menu_vistas.idmenu',$menus->idmenu) 
+            ->orderBy('menu_vistas.idv')
+            ->get();
+        }
+ 
+       $user= User::select(  
+        "users.name",
+        "users.id",
+        "rols.idrol", 
+        "rols.namerol" ) 
+        ->join("rols","rols.idrol","=","users.idrol") 
+        ->where('users.id',Auth::id())  
+        ->first(); 
+        return ['user'=>$user,'menus'=> $Rolmenu]; 
     }
 
     /**

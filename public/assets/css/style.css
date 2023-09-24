@@ -11233,7 +11233,7 @@ textarea.form-control {
         font-size: 20px;
         line-height: 70px;
         padding: 0 10px;
-        transform: translateY(171%);
+        /* transform: translateY(171%); */
     }
 
     .user-active .call-imgs {
@@ -12554,4 +12554,12 @@ textarea.form-control {
     .follow-btn-group .btn-info {
         min-width: auto
     }
+}
+.bselect a{
+    color: white !important;
+    background-color: #2196F3;
+    box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.05);
+}
+.bselect .menu-side{
+    background: rgb(255 255 255 / 75%) !important;
 }

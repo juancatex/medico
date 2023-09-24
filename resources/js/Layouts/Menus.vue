@@ -1,23 +1,45 @@
 <script setup> 
 import { Link } from '@inertiajs/vue3';
-import {onBeforeMount,ref} from 'vue'; 
+import {onBeforeMount,ref,onMounted} from 'vue'; 
 const props =defineProps({ 
     menuname: {
         type: String,
-    } ,
-    users: {
-        type: Object,
-    },
+    } 
 });
 const nombre=ref({});
+const menus=ref({});
+  
 function getdata(){ 
     axios.get("userin").then(function (response) {  
-        nombre.value=response.data;
+        nombre.value=response.data.user; 
+        menus.value=response.data.menus;  
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
 }
+
+function init() { 
+       
+         $('#sidebar-menu ul li.submenu a.active').parents('li:last').children('a:first').addClass('active').trigger('click');
+}
+function clickevento(menu){
+    console.log("object"+$('#'+menu).hasClass('subdrop'));
+           if (!$('#'+menu).hasClass('subdrop')) {
+                $('ul', $('#'+menu).parents('ul:first')).slideUp(350);
+                $('a', $('#'+menu).parents('ul:first')).removeClass('subdrop');
+                $('#'+menu).next('ul').slideDown(350);
+                $('#'+menu).addClass('subdrop');
+            } else if ($('#'+menu).hasClass('subdrop')) {
+                $('#'+menu).removeClass('subdrop');
+                $('#'+menu).next('ul').slideUp(350);
+            }
+}
+
+onMounted(() => {
+    console.log("entroo");
+    init();
+});
 
 onBeforeMount(() => {
     getdata();
@@ -39,7 +61,7 @@ onBeforeMount(() => {
                     <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
                         <div class="user-names">
                             <h5>{{ nombre.name}}</h5>
-                            <span>Admin</span>
+                            <span>{{ nombre.namerol}}</span>
                         </div>
                         <span class="user-img">
                             <img src="assets/img/user-06.jpg" alt="Admin">
@@ -48,7 +70,7 @@ onBeforeMount(() => {
                     <div class="dropdown-menu"> 
                         <a class="dropdown-item" href="edit-profile.html">Perfil</a>
                         <a class="dropdown-item" href="settings.html">Configuraciones</a> 
-                        <Link :href="route('logout')" method="post" as="button" class="dropdown-item" >Saliddr</Link> 
+                        <Link :href="route('logout')" method="post" as="button" class="dropdown-item" >Salir</Link> 
                     </div>
                 </li> 
             </ul>
@@ -59,7 +81,7 @@ onBeforeMount(() => {
                     <a class="dropdown-item" href="profile.html">My Profile</a>
                     <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
                     <a class="dropdown-item" href="settings.html">Settings</a>
-                    <a class="dropdown-item" href="login.html">Logout</a>
+                    <Link :href="route('logout')" method="post" as="button" class="dropdown-item" >Salir</Link> 
                 </div>
             </div>
         </div>
@@ -68,31 +90,20 @@ onBeforeMount(() => {
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
                         <li class="menu-title">Menu</li>
-                        
-                        <li>
-                            <a href="chat.html"><span class="menu-side"><img src="assets/img/icons/menu-icon-10.svg"
-                                        alt=""></span> <span>Chat</span> <span class="menu-arrow"></span></a>
-                        </li>  
-                        <li>
-                            <a href="chat.html"><span class="menu-side"><img src="assets/img/icons/menu-icon-10.svg"
-                                        alt=""></span> <span>Chat</span> <span class="menu-arrow"></span></a>
-                        </li>  
-                        <li>
-                            <a href="chat.html"><span class="menu-side"><img src="assets/img/icons/menu-icon-10.svg"
-                                        alt=""></span> <span>Chat</span> <span class="menu-arrow"></span></a>
-                        </li>  
-                        <li>
-                            <a href="chat.html"><span class="menu-side"><img src="assets/img/icons/menu-icon-10.svg"
-                                        alt=""></span> <span>Chat</span> <span class="menu-arrow"></span></a>
-                        </li>  
-                        <li>
-                            <a href="chat.html"><span class="menu-side"><img src="assets/img/icons/menu-icon-10.svg"
-                                        alt=""></span> <span>Chat</span> <span class="menu-arrow"></span></a>
-                        </li>  
+                         
+
+                        <li class="submenu" v-for="(item, index) in menus" :key="item.idmenu" >
+                            <a href="#" @click.prevent="clickevento('menu'+item.idmenu)" :id="'menu'+item.idmenu"><i :class="item.logo"></i> <span> {{item.nommenu}} </span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+                                <li><a href="expense-reports.html"> Expense Report </a></li>
+                                <li><a href="invoice-reports.html"> Invoice Report </a></li>
+                            </ul>
+                        </li>
+  
                     </ul>
                     <div class="logout-btn">
-                        <a href="login.html"><span class="menu-side"><img src="assets/img/icons/logout.svg"
-                                    alt=""></span> <span>Salir del sistema</span></a>
+                         <Link :href="route('logout')" method="post" ><span class="menu-side"><img src="assets/img/icons/logout.svg"  alt=""></span> <span>Salir del sistema</span></Link> 
                     </div>
                 </div>
             </div>
