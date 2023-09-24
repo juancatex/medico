@@ -40,11 +40,6 @@ class DatabaseSeeder extends Seeder
         DB::table('vistas')->insert(['idv'=>1,'nomvista'=>'Enfermeras','nomvue'=>'Enfermera','ruta'=>'Enfermera']);
 
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>1]);
-        DB::table('menu_vistas')->insert(['idmenu'=>2,'idv'=>1]);
-        DB::table('menu_vistas')->insert(['idmenu'=>3,'idv'=>1]);
-        DB::table('menu_vistas')->insert(['idmenu'=>4,'idv'=>1]);
-        DB::table('menu_vistas')->insert(['idmenu'=>5,'idv'=>1]);
-        DB::table('menu_vistas')->insert(['idmenu'=>6,'idv'=>1]);
 
         
 
