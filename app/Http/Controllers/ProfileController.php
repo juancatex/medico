@@ -13,6 +13,8 @@ use Inertia\Response;
 use App\Models\User;
 use App\Models\Rolmenu;
 use App\Models\MenuVista;
+use App\Models\Departamento;
+use App\Models\Provincia;
 
 class ProfileController extends Controller
 {
@@ -49,12 +51,87 @@ class ProfileController extends Controller
     public function listarDoctor(Request $request): Response
     {
         $Pacientes= User::where('activo',1)
-        ->where('idrol',2)
-        ->orderBy('name')
-        ->paginate(10);  
+        ->where('idrol',2) ;
+        if(!empty($request->search)){ 
+            $Pacientes=$Pacientes->where('name','like',"%$request->search%") ; 
+        }
+        $Pacientes=$Pacientes->orderBy('name')->paginate(5); 
+        
+        $dep= Departamento::where('activo',1)->orderBy('iddepartamento')->get();    
+
+        $prov=[];
+        if(!empty($request->dep)){
+            $prov= Provincia::where('activo',1)->where('iddepartamento',$request->dep)->orderBy('nomprovincia')->get(); 
+        } 
+
         return Inertia::render('Doctor', [ 
-            'lista' =>  $Pacientes
+            'lista' =>  $Pacientes,
+            'dep' =>  $dep,
+            'prov' =>  $prov,
         ]);
+    }
+    public function storedoctor(Request $request)
+    { 
+        $request->validate([ 
+            'name' => 'required|string|max:255',  
+            'iddepartamento' => 'required|numeric',
+            'idprovincia' => 'required|numeric',  
+            'ci' => 'required|numeric',  
+            'genero' => 'required|string',  
+            'telefono' => 'required|numeric',    
+            'email' => 'required|email|unique:users',  
+            'matricula' => 'required',  
+            'dir' => 'required',  
+            'fechanacimiento' => 'required' 
+        ]);
+       
+
+        $doctor=User::create([
+            'name' => $request->name,
+            'idrol' => $request->idrol,
+            'iddepartamento' => $request->iddepartamento,
+            'idprovincia' => $request->idprovincia,
+            'ci' => $request->ci,
+            'telefono' => $request->telefono,
+            'telfamiliar' => $request->telfamiliar,
+            'fechanacimiento' => $request->fechanacimiento,
+            'matricula' => $request->matricula,
+            'dir' => $request->dir,
+            'email' => $request->email,
+            'foto' => $request->foto,
+            'genero' => $request->genero,
+            'password' =>  bcrypt($request->ci)
+        ]);   
+        $doctor->save();
+
+        return redirect('/Doctor');
+    }
+    public function updatedoctor(Request $request)
+    { 
+        $activo = User::findOrFail($request->id);
+        $activo->name = $request->name; 
+        $activo->iddepartamento = $request->iddepartamento; 
+        $activo->idprovincia = $request->idprovincia; 
+        $activo->ci = $request->ci; 
+        $activo->telefono = $request->telefono; 
+        $activo->telfamiliar = $request->telfamiliar; 
+        $activo->fechanacimiento = $request->fechanacimiento; 
+        $activo->matricula = $request->matricula; 
+        $activo->dir = $request->dir; 
+        $activo->email = $request->email; 
+        $activo->foto = $request->foto;   
+        $activo->genero = $request->genero;    
+        $activo->save(); 
+ 
+        return redirect('/Doctor');
+    }
+    public function deletedoctor(Request $request)
+    { 
+        $activo = User::findOrFail($request->id);
+        $activo->activo = 0; 
+        $activo->save(); 
+ 
+        return redirect('/Doctor');
     }
     public function userin()
     {

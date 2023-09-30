@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermeras'); 
     Route::get('/Paciente', [ProfileController::class, 'listarPaciente'])->name('Pacientes'); 
     Route::get('/Doctor', [ProfileController::class, 'listarDoctor'])->name('Doctores'); 
+    Route::post('/RegDoctor', [ProfileController::class, 'storedoctor'])->name('RegDoctor'); 
+    Route::put('/ActualizarDoctor', [ProfileController::class, 'updatedoctor'])->name('ActualizarDoctor'); 
+    Route::post('/EliminarDoctor', [ProfileController::class, 'deletedoctor'])->name('EliminarDoctor'); 
 });
 
 require __DIR__.'/auth.php';

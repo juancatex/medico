@@ -10902,7 +10902,7 @@ td.add-remove {
     border: 1px solid #e4e4e4;
     border-radius: 5px;
     display: flex;
-    margin-top: 30px;
+    /* margin-top: 30px; */
     width: 196px;
     height: 78px;
     justify-content: space-around;
@@ -10911,7 +10911,7 @@ td.add-remove {
 }
 
 .upload-images img {
-    max-height: 45px;
+    max-height: 70px;
     width: auto
 }
 
@@ -10968,8 +10968,10 @@ td.add-remove {
 }
 
 .upload-size {
-    width: 82px;
-    height: 82px
+    /* width: 82px;
+    height: 82px */
+    width: 177px;
+    height: 88px;
 }
 
 .check {
@@ -12563,4 +12565,8 @@ textarea.form-control {
 .bselect i{
     background: rgb(255 255 255 / 75%) !important;
     color: dimgray;
+}
+
+.errorinput{
+    border: 2px solid rgba(244, 67, 54, 0.89)  !important;
 }

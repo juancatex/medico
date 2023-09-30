@@ -1,13 +1,109 @@
 <script setup> 
-import { Head,Link } from '@inertiajs/vue3';  
+import { Head,Link,useForm,router} from '@inertiajs/vue3';  
 import Menus from '@/Layouts/Menus.vue';
-import {getCurrentInstance,onMounted} from 'vue'; 
+import TextInput from '@/Components/TextInput.vue';
+import Cropp from '@/Components/CropperImage.vue'; 
+import Pagination from '@/Components/Paginations.vue';
+import {getCurrentInstance,onMounted,watch,ref} from 'vue'; 
+import Swal from 'sweetalert2';
+import { debounce } from 'lodash';
+const componentName = getCurrentInstance()?.type.__name;
+const searchField=ref('');
+const updatemodal=ref(false);
 const props =defineProps({ 
     lista: {
         type: Object,
-    }  
+    },  
+    dep: {
+        type: Object,
+    }, 
+    prov: {
+        type: Object,
+    } 
 });
-const componentName = getCurrentInstance()?.type.__name
+const form = useForm({
+    iddepartamento:'',
+    idrol: 2,
+    idprovincia: '',
+    name: '',
+    genero: null, 
+    ci:null, 
+    id:null, 
+    fechanacimiento:'', 
+    matricula: '',
+    telefono: null,
+    telfamiliar: null,
+    dir: '',
+    email: '', 
+    foto:null       
+});
+
+function cambiadepartamento() {
+    form.idprovincia='';
+    router.get('Doctor', {dep: form.iddepartamento}, {preserveState: true, preserveScroll: true, only: ['prov']});  
+}
+function modalo(){
+    updatemodal.value=false;
+    form.clearErrors();
+    form.reset();
+    $('#registrodoctores').modal('show'); 
+}
+function modalupdate(doctor){
+    updatemodal.value=true;
+    form.clearErrors();
+    form.reset();
+    form.id=doctor.id;
+    form.iddepartamento=doctor.iddepartamento;
+    cambiadepartamento();
+    form.idrol=2;
+    form.idprovincia=doctor.idprovincia;
+    form.name=doctor.name
+    form.genero=doctor.genero;
+    form.ci=doctor.ci;
+    form.fechanacimiento=doctor.fechanacimiento;
+    form.matricula=doctor.matricula;
+    form.telefono=doctor.telefono;
+    form.telfamiliar=doctor.telfamiliar;
+    form.dir=doctor.dir;
+    form.email=doctor.email; 
+    form.foto=doctor.foto;
+    $('#registrodoctores').modal('show'); 
+}
+const closeModal=()=>{ 
+    updatemodal.value=false;
+    form.reset();
+    form.clearErrors(); 
+    $('#registrodoctores').modal('hide');  
+};
+const guardarDatos=()=>{
+    form.post(route('RegDoctor'),{onSuccess:()=>{ok('Creado correctamente')}  });
+};
+const actualizarDatos=()=>{
+    form.put(route('ActualizarDoctor'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
+};
+ 
+const EliminarDatos=(id)=>{
+    
+    const alerta=Swal.mixin({buttonsStyling:true});
+    alerta.fire({
+        title:'¿Esta seguro de eliminar el registro?',
+        icon:'question',showCancelButton:true,
+        confirmButtonText:'<i class="ti-check"></i> Si',
+        cancelButtonText:'<i class="ti-close"></i> Cancelar'
+    }).then(
+        (result)=>{
+            if(result.isConfirmed){ 
+                form.id=id;
+                form.post(route('EliminarDoctor'),{onSuccess:()=>{ok('Eliminado correctamente')}  });
+            } 
+        }
+    );
+    }; 
+
+const ok =(msj)=>{ 
+    closeModal();
+    Swal.fire({title:msj,icon:'success'});
+};
 
 onMounted(() => { 
     if ($('[data-feather]').length > 0) {
@@ -15,7 +111,9 @@ onMounted(() => {
     }
       console.log(componentName);
     });
-
+watch(searchField, debounce(() => { 
+    router.get('/Doctor', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
+}, 300));
 </script>
 
 <template>
@@ -48,7 +146,7 @@ onMounted(() => {
                                                 <div class="doctor-search-blk">
                                                     <div class="top-nav-search table-search-blk">
                                                         <form>
-                                                            <input type="text" class="form-control"
+                                                            <input type="text" class="form-control" v-model="searchField"
                                                                 placeholder="Buscar">
                                                             <a class="btn"><img src="assets/img/icons/search-normal.svg"
                                                                     ></a>
@@ -60,10 +158,9 @@ onMounted(() => {
                                         </div>
                                         <div class="col-auto text-end float-end ms-auto download-grp">
                                             <div class="invoices-settings-btn"> 
-                                                <div  class="btn" data-bs-toggle="modal"
-                                    data-bs-target="#invoices_preview">
+                                                <button  class="btn" @click="modalo">
                                                     <i data-feather="plus-circle"></i> Nuevo registro
-                                                </div>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -74,50 +171,50 @@ onMounted(() => {
                                         <thead>
                                             <tr>
                                                  
-                                                <th>Name</th>
-                                                <th>Department</th>
-                                                <th>Specialization</th>
-                                                <th>Degree</th>
-                                                <th>Mobile</th>
-                                                <th>Email</th>
-                                                <th>Joining Date</th>
+                                                <th>Nombre completo</th>
+                                                <th>C.I.</th>
+                                                <th>Fecha de Nacimiento</th>
+                                                <th>Matricula</th>
+                                                <th>Correo Electrónico</th> 
+                                                <th>Numero de Teléfono</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                             
-                                                <td class="profile-image"><a href="profile.html"><img width="28"
-                                                            height="28" src="assets/img/profiles/avatar-01.jpg"
-                                                            class="rounded-circle m-r-5" alt=""> Andrea Lalema</a></td>
-                                                <td>Otolaryngology</td>
-                                                <td>Infertility</td>
-                                                <td>MBBS, MS</td>
-                                                <td><a href="javascript:;">+1 23 456890</a></td>
-                                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                        data-cfemail="d1b4a9b0bca1bdb491b4bcb0b8bdffb2bebc">[email&#160;protected]</a>
-                                                </td>
-                                                <td>01.10.2022</td>
+                                        <tbody> 
+                                            <tr v-for="doctor in lista.data" :key="doctor.id"> 
+
+                                                <td class="profile-image"><img width="28"
+                                                                                height="28" :src="doctor.foto?doctor.foto:'assets/img/user.jpg'"
+                                                                                class="rounded-circle m-r-5" alt="">{{ doctor.name}}</td> 
+                                                <td class="align-middle" style="text-align: center;">{{ doctor.ci }}</td>
+                                                <td class="align-middle" style="text-align: center;">{{ doctor.fechanacimiento }}</td>
+                                                <td class="align-middle" style="text-align: center;">{{ doctor.matricula }}</td>
+                                                <td class="align-middle" style="text-align: right;">{{ doctor.email }}</td>
+                                                <td class="align-middle" style="text-align: right;">{{ doctor.telefono }}</td> 
+
                                                 <td class="text-end">
-                                                    <a href="edit-invoices.html"
-                                                        class="btn btn-sm btn-white text-success me-2"><i
-                                                            class="far fa-edit me-1"></i> Edit</a>
-                                                    <a class="btn btn-sm btn-white text-danger" href="#"
-                                                        data-bs-toggle="modal" data-bs-target="#delete_paid"><i
-                                                            class="far fa-trash-alt me-1"></i>Delete</a>
+                                                                        <button @click="modalupdate(doctor)"
+                                                                            class="btn btn-sm btn-white text-success me-2"><i
+                                                                                class="far fa-edit me-1"></i> Editar</button>
+
+                                                                        <button @click="EliminarDatos(doctor.id)"
+                                                                            class="btn btn-sm btn-white text-danger"><i
+                                                                                class="far fa-trash-alt me-1"></i>Eliminar</button>
                                                 </td>
-                                            </tr>
-                                             
+                                            </tr> 
                                         </tbody>
                                     </table>
-                                </div>
+
+                                    
+                                </div><pagination class="m-3" :links="lista.links" />
                             </div>
                         </div>
                     </div>
                 </div>
     </div>
+    
     <!-- -------------------modals---------------------- -->
-    <div class="modal custom-modal modal-bg  fade invoices-preview" id="invoices_preview" role="dialog">
+    <div class="modal custom-modal modal-bg  fade invoices-preview" id="registrodoctores" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -143,181 +240,130 @@ onMounted(() => {
                                             </div>
                                         </div>
  
-                                        <div class="row">
+                                        <div class="row mt-4">
                                       
+                                        <div class="col-12 col-md-12 col-xl-12">
+                                            <div class="form-group local-forms">
+                                                <label>Nombre completo <span class="login-danger">*</span></label> 
+                                                <TextInput class="form-control" type="text" v-model="form.name" :class="form.errors.name?'errorinput':''"></TextInput>
+                                            </div>
+                                        </div>
+                                         
+
                                         <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="form-group local-forms">
-                                                <label>First Name <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
+                                            <div class="form-group local-forms ">
+                                                <label>Fecha de nacimiento<span class="login-danger">*</span></label> 
+                                                <TextInput class="form-control datetimepicker" type="date" v-model="form.fechanacimiento" :class="form.errors.fechanacimiento?'errorinput':''"></TextInput>
                                             </div>
                                         </div>
+
                                         <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="form-group local-forms">
-                                                <label>Last Name <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="form-group local-forms">
-                                                <label>User Name <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-forms">
-                                                <label>Mobile <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-forms">
-                                                <label>Email <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="email" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-forms">
-                                                <label>Password <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="password" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-forms">
-                                                <label>Confirm Password <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="password" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-forms cal-icon">
-                                                <label>Date Of Birth <span class="login-danger">*</span></label>
-                                                <input class="form-control datetimepicker" type="text" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group select-gender">
-                                                <label class="gen-label">Gender<span
+                                            <div class="form-group select-gender" :class="form.errors.genero?'errorinput':''">
+                                                <label class="gen-label">Genero<span
                                                         class="login-danger">*</span></label>
                                                 <div class="form-check-inline">
-                                                    <label class="form-check-label">
-                                                        <input type="radio" name="gender"
-                                                            class="form-check-input mt-0">Male
+                                                    <label class="form-check-label"> 
+                                                            <TextInput class="form-check-input mt-0" name="gender" value="M" type="radio" v-model="form.genero" :checked="form.genero=='M'"/>Masculino 
                                                     </label>
                                                 </div>
                                                 <div class="form-check-inline">
                                                     <label class="form-check-label">
-                                                        <input type="radio" name="gender"
-                                                            class="form-check-input mt-0">Female
+                                                            <TextInput class="form-check-input mt-0" name="gender" value="F" type="radio" v-model="form.genero" :checked="form.genero=='F'"/>Femenino 
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>Education <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
+                                                <label>Cedula de Identidad <span class="login-danger">*</span></label> 
+                                                <TextInput class="form-control" type="number" v-model="form.ci" :class="form.errors.ci?'errorinput':''"></TextInput>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>Designation <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
+                                                <label>Matricula Profesional <span class="login-danger">*</span></label>
+                                                <TextInput class="form-control" type="text" v-model="form.matricula" :class="form.errors.matricula?'errorinput':''"></TextInput>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 col-xl-4">
+                                            <div class="form-group local-forms">
+                                                <label>Numero de telefono <span class="login-danger">*</span></label>
+                                                <TextInput class="form-control" type="number" v-model="form.telefono" :class="form.errors.telefono?'errorinput':''"></TextInput>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>Department <span class="login-danger">*</span></label>
-                                                <select class="form-control select">
-                                                    <option>Select Department</option>
-                                                    <option>Orthopedics</option>
-                                                    <option>Radiology</option>
-                                                    <option>Dentist</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12">
+                                                <label>Contacto de Emergencia <span class="login-danger">*</span></label>
+                                                <TextInput class="form-control" type="number" v-model="form.telfamiliar" :class="form.errors.telfamiliar?'errorinput':''"></TextInput>
+                                            </div> 
+                                        </div> 
+                                        <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>Address <span class="login-danger">*</span></label>
-                                                <textarea class="form-control" rows="3" cols="30"></textarea>
+                                                <label>Ciudad <span class="login-danger">*</span></label> 
+                                                    <select class="form-control select"
+                                                        v-model="form.iddepartamento"
+                                                        @change="cambiadepartamento"
+                                                        ref="input" >  
+                                                        <option value=""  disabled >Seleccione Departamento</option>
+                                                        <option v-for="op in dep" :key="op.iddepartamento" :value="op.iddepartamento"  :selected="op.iddepartamento==form.iddepartamento">
+                                                            {{ op.nomdepartamento }}
+                                                        </option>
+                                                    </select> 
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 col-xl-3">
+                                        <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>City <span class="login-danger">*</span></label>
-                                                <select class="form-control select">
-                                                    <option>Select City</option>
-                                                    <option>Alaska</option>
-                                                    <option>Los Angeles</option>
-                                                </select>
+                                                <label>Provincia <span class="login-danger">*</span></label>
+                                              
+                                                    <select class="form-control select"
+                                                        v-model="form.idprovincia" 
+                                                        ref="input" >  
+                                                        <option value=""  disabled >Seleccione Provincia</option>
+                                                        <option v-for="pro in prov" :key="pro.idprovincia" :value="pro.idprovincia" :selected="pro.idprovincia==form.idprovincia">
+                                                            {{ pro.nomprovincia }}
+                                                        </option>
+                                                    </select> 
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 col-xl-3">
+ 
+                                        <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
-                                                <label>Country <span class="login-danger">*</span></label>
-                                                <select class="form-control select">
-                                                    <option>Select Country </option>
-                                                    <option>Usa</option>
-                                                    <option>Uk</option>
-                                                    <option>Italy</option>
-                                                </select>
+                                                <label>Correo Electronico <span class="login-danger">*</span></label> 
+                                                <TextInput class="form-control" type="email" v-model="form.email" :class="form.errors.email?'errorinput':''"></TextInput>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 col-xl-3">
+                                        <div class="col-12 col-sm-10">
                                             <div class="form-group local-forms">
-                                                <label>State/Province <span class="login-danger">*</span></label>
-                                                <select class="form-control select">
-                                                    <option>Select State</option>
-                                                    <option>Alaska</option>
-                                                    <option>California</option>
-                                                </select>
+                                                <label>Direccion <span class="login-danger">*</span></label>
+                                                <textarea class="form-control" rows="6" cols="30" v-model="form.dir" :class="form.errors.dir?'errorinput':''" ></textarea>
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-3">
-                                            <div class="form-group local-forms">
-                                                <label>Postal Code <span class="login-danger">*</span></label>
-                                                <input class="form-control" type="text" placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12">
-                                            <div class="form-group local-forms">
-                                                <label>Start Biography <span class="login-danger">*</span></label>
-                                                <textarea class="form-control" rows="3" cols="30"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group local-top-form">
-                                                <label class="local-top">Avatar <span
-                                                        class="login-danger">*</span></label>
-                                                <div class="settings-btn upload-files-avator">
-                                                    <input type="file" accept="image/*" name="image" id="file"
-                                                        onchange="loadFile(event)" class="hide-input">
-                                                    <label for="file" class="upload">Choose File</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 col-xl-6">
-                                            <div class="form-group select-gender">
-                                                <label class="gen-label">Status <span
-                                                        class="login-danger">*</span></label>
-                                                <div class="form-check-inline">
-                                                    <label class="form-check-label">
-                                                        <input type="radio" name="gender"
-                                                            class="form-check-input mt-0">Active
-                                                    </label>
-                                                </div>
-                                                <div class="form-check-inline">
-                                                    <label class="form-check-label">
-                                                        <input type="radio" name="gender"
-                                                            class="form-check-input mt-0">In Active
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div> 
+                                       
+
+                                        <div class="col-12 col-md-6 col-xl-2 row">
+                                            <table
+                                                :class="form.errors.foto?'form-floating dropzone mb-3 has-danger':'form-floating dropzone mb-3'">
+                                                <tbody> 
+                                                    <tr>
+                                                        <td class="align-middle" style="text-align: center;">
+                                                            <div v-if="form.foto" class="upload-images upload-size mb-2">
+                                                                <img  :src="form.foto" alt="Image">
+                                                             </div>
+                                                           <Cropp v-model="form.foto"/>
+                                                        </td> 
+                                                    </tr> 
+                                                </tbody>
+                                            </table>
+                                        </div> 
                                         <div class="col-12">
                                             <div class="doctor-submit text-end">
-                                                <button type="submit"
-                                                    class="btn btn-primary submit-form me-2">Submit</button>
-                                                <button type="submit"
-                                                    class="btn btn-primary cancel-form">Cancel</button>
+                                                <button v-if="updatemodal" @click="actualizarDatos"
+                                                    class="btn btn-primary submit-form me-2" :disabled="form.processing">Actualizar</button>
+                                                <button v-else @click="guardarDatos"
+                                                    class="btn btn-primary submit-form me-2" :disabled="form.processing">Registrar</button>
+                                                <button @click="closeModal"
+                                                    class="btn btn-primary cancel-form" :disabled="form.processing">Cancelar</button>
                                             </div>
                                         </div>
                                     </div>

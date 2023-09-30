@@ -14,8 +14,8 @@
         <link rel="stylesheet" type="text/css" href="assets/css/select2.min.css">
         <link rel="stylesheet" href="assets/plugins/datatables/datatables.min.css">
         <link rel="stylesheet" href="assets/plugins/feather/feather.css">
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css"> 
+        <link rel="stylesheet" href="assets/cropper/dist/cropper.min.css">
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
@@ -24,6 +24,7 @@
     <body>
         @inertia
         <script src="assets/js/jquery-3.6.1.min.js"></script>
+<script src="assets/cropper/dist/cropper.min.js"></script>
 <script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/feather.min.js"></script>
 <script src="assets/js/jquery.slimscroll.js"></script>
