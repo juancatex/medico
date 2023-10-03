@@ -42,8 +42,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userin', [ProfileController::class, 'userin'])->name('userin');
 
-    Route::get('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermeras'); 
+    
     Route::get('/Paciente', [ProfileController::class, 'listarPaciente'])->name('Pacientes'); 
+    Route::post('/RegPaciente', [ProfileController::class, 'storePaciente'])->name('RegPaciente'); 
+    Route::put('/ActualizarPaciente', [ProfileController::class, 'updatePaciente'])->name('ActualizarPaciente'); 
+    Route::post('/EliminarPaciente', [ProfileController::class, 'deletepaciente'])->name('EliminarPaciente'); 
+
+    Route::get('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermeras'); 
+    Route::post('/RegEnfermera', [ProfileController::class, 'storeenfermera'])->name('RegEnfermera'); 
+    Route::put('/ActualizarEnfermera', [ProfileController::class, 'updateEnfermera'])->name('ActualizarEnfermera'); 
+    Route::post('/EliminarEnfermera', [ProfileController::class, 'deleteEnfermera'])->name('EliminarEnfermera'); 
+
     Route::get('/Doctor', [ProfileController::class, 'listarDoctor'])->name('Doctores'); 
     Route::post('/RegDoctor', [ProfileController::class, 'storedoctor'])->name('RegDoctor'); 
     Route::put('/ActualizarDoctor', [ProfileController::class, 'updatedoctor'])->name('ActualizarDoctor'); 

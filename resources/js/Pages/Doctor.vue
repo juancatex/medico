@@ -210,11 +210,11 @@ watch(searchField, debounce(() => {
                             </div>
                         </div>
                     </div>
-                </div>
+        </div>
     </div>
     
     <!-- -------------------modals---------------------- -->
-    <div class="modal custom-modal modal-bg  fade invoices-preview" id="registrodoctores" role="dialog">
+     <div class="modal custom-modal modal-bg  fade invoices-preview" id="registrodoctores" role="dialog">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -375,7 +375,8 @@ watch(searchField, debounce(() => {
                     </div>
                 </div>
             </div>
-        </div>
+     </div>
+     <!-- -------------------modals---------------------- -->
     </Menus>
      
 </template>
