@@ -158,9 +158,9 @@ class DatabaseSeeder extends Seeder
         DB::table('rols')->insert(['idrol'=>4,'namerol'=>'Paciente','descripcionrol'=>'Paciente']); 
 
         DB::table('menus')->insert(['idmenu'=>1,'nommenu'=>'Usuarios','logo'=>'fa fa-users']); 
-        DB::table('menus')->insert(['idmenu'=>2,'nommenu'=>'Control Prenatal','logo'=>'fa fa-edit']);
+        DB::table('menus')->insert(['idmenu'=>2,'nommenu'=>'Antecedentes','logo'=>'fa fa-list']);
         DB::table('menus')->insert(['idmenu'=>3,'nommenu'=>'Gestacion Actual','logo'=>'fa fa-female']);
-        DB::table('menus')->insert(['idmenu'=>4,'nommenu'=>'Antecedentes','logo'=>'fa fa-list']);
+        DB::table('menus')->insert(['idmenu'=>4,'nommenu'=>'Control Prenatal','logo'=>'fa fa-edit']); 
         DB::table('menus')->insert(['idmenu'=>5,'nommenu'=>'Carnet Perinatal','logo'=>'fa fa-calendar-check']);
         DB::table('menus')->insert(['idmenu'=>6,'nommenu'=>'Reportes','logo'=>'fa fa-flag']);
 
@@ -174,12 +174,13 @@ class DatabaseSeeder extends Seeder
         DB::table('vistas')->insert(['idv'=>1,'nomvista'=>'Enfermeras','nomvue'=>'Enfermera','ruta'=>'Enfermeras']);
         DB::table('vistas')->insert(['idv'=>2,'nomvista'=>'Pacientes','nomvue'=>'Paciente','ruta'=>'Pacientes']);
         DB::table('vistas')->insert(['idv'=>3,'nomvista'=>'Doctores','nomvue'=>'Doctor','ruta'=>'Doctores']);
+        DB::table('vistas')->insert(['idv'=>4,'nomvista'=>'Antecedentes','nomvue'=>'Antecedentes','ruta'=>'Antecedentes']);
 
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>1]);
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>2]);
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>3]);
 
-        
+        DB::table('menu_vistas')->insert(['idmenu'=>2,'idv'=>4]); 
  
 
         $user = new \App\Models\User(); 

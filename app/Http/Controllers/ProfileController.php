@@ -105,6 +105,20 @@ class ProfileController extends Controller
             'autoid' =>  $autoidentificacion,
         ]);
     }
+    public function listarPacienteAntecedente(Request $request): Response
+    {
+          
+        $pacientes= User::where('activo',1)
+        ->where('idrol',4) ;
+        if(!empty($request->search)){ 
+            $pacientes=$pacientes->where('name','like',"%$request->search%") ; 
+        }
+        $pacientes=$pacientes->orderBy('name')->paginate(5); 
+         
+        return Inertia::render('Antecedentes', [ 
+            'lista' =>  $pacientes, 
+        ]);
+    }
     public function listarDoctor(Request $request): Response
     {
         $Pacientes= User::where('activo',1)

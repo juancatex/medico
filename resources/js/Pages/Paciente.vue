@@ -136,7 +136,9 @@ const actualizarDatos=()=>{
 watch(form, debounce(() => { 
     form.ci=form.cip.replace(/\D/g, '');
 }, 300));
-
+watch(searchField, debounce(() => { 
+    router.get('/Paciente', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
+}, 300));
 onMounted(() => { 
       console.log(componentName);
       console.log(props.autoid);

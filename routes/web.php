@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AntecedenteController;
 use Illuminate\Foundation\Application;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -42,7 +43,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userin', [ProfileController::class, 'userin'])->name('userin');
 
-    
+    Route::get('/Antecedentes', [ProfileController::class, 'listarPacienteAntecedente'])->name('Antecedentes'); 
+
+    Route::get('/obtenerantecedentes', [AntecedenteController::class, 'anteuser'])->name('obtenerantecedentes'); 
+    Route::post('/RegAntecedentes', [AntecedenteController::class, 'store'])->name('RegAntecedentes'); 
+
     Route::get('/Paciente', [ProfileController::class, 'listarPaciente'])->name('Pacientes'); 
     Route::post('/RegPaciente', [ProfileController::class, 'storePaciente'])->name('RegPaciente'); 
     Route::put('/ActualizarPaciente', [ProfileController::class, 'updatePaciente'])->name('ActualizarPaciente'); 
