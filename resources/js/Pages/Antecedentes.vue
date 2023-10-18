@@ -82,11 +82,7 @@ function openantecedentes(paciente){
     });
 }
 function modalupdate(data){ 
-    var paciente=data.data;
-    console.log(data.data);
-    console.log(paciente);
-    console.log(paciente['tbcf']);
-    console.log(paciente.tbcf);
+    var paciente=data.data; 
     form.clearErrors();
     form.reset(); 
     form.iduser=paciente.iduser;

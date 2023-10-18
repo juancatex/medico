@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AntecedenteController;
+use App\Http\Controllers\GestacionActualController;
+use App\Http\Controllers\ControlPrenatalController;
 use Illuminate\Foundation\Application;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -43,7 +45,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userin', [ProfileController::class, 'userin'])->name('userin');
 
+    Route::get('/ControlPrenatal', [ProfileController::class, 'listarPacienteControlprenatal'])->name('ControlPrenatal');  
+    Route::get('/ControlPrenatalTrat', [ProfileController::class, 'listarPacienteControlprenataltrat'])->name('ControlPrenatalTrat');  
+    Route::get('/GestacionActual', [ProfileController::class, 'listarPacienteGestacionActual'])->name('GestacionActual');  
     Route::get('/Antecedentes', [ProfileController::class, 'listarPacienteAntecedente'])->name('Antecedentes'); 
+
+    Route::get('/obtenerregistros', [ControlPrenatalController::class, 'getregistros'])->name('obtenerregistros'); 
+    Route::get('/obtenerregistrostrat', [ControlPrenatalController::class, 'getregistrostrat'])->name('obtenerregistrostrat'); 
+    Route::post('/RegControlPrenatal', [ControlPrenatalController::class, 'store'])->name('RegControlPrenatal'); 
+    Route::post('/RegControlPrenatalDoc', [ControlPrenatalController::class, 'edit'])->name('RegControlPrenatalDoc'); 
+
+    Route::get('/obtenergestacionActual', [GestacionActualController::class, 'gestactuser'])->name('obtenergestacionActual'); 
+    Route::post('/Reggestacionactual', [GestacionActualController::class, 'store'])->name('Reggestacionactual'); 
 
     Route::get('/obtenerantecedentes', [AntecedenteController::class, 'anteuser'])->name('obtenerantecedentes'); 
     Route::post('/RegAntecedentes', [AntecedenteController::class, 'store'])->name('RegAntecedentes'); 

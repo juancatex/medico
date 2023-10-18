@@ -175,12 +175,18 @@ class DatabaseSeeder extends Seeder
         DB::table('vistas')->insert(['idv'=>2,'nomvista'=>'Pacientes','nomvue'=>'Paciente','ruta'=>'Pacientes']);
         DB::table('vistas')->insert(['idv'=>3,'nomvista'=>'Doctores','nomvue'=>'Doctor','ruta'=>'Doctores']);
         DB::table('vistas')->insert(['idv'=>4,'nomvista'=>'Antecedentes','nomvue'=>'Antecedentes','ruta'=>'Antecedentes']);
+        DB::table('vistas')->insert(['idv'=>5,'nomvista'=>'Gestacion Actual','nomvue'=>'GestacionActual','ruta'=>'GestacionActual']);
+        DB::table('vistas')->insert(['idv'=>6,'nomvista'=>'Control Prenatal inicial','nomvue'=>'ControlPrenatal','ruta'=>'ControlPrenatal']);
+        DB::table('vistas')->insert(['idv'=>7,'nomvista'=>'Control Prenatal Tratamiento','nomvue'=>'ControlPrenatalTrat','ruta'=>'ControlPrenatalTrat']);
 
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>1]);
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>2]);
         DB::table('menu_vistas')->insert(['idmenu'=>1,'idv'=>3]);
 
         DB::table('menu_vistas')->insert(['idmenu'=>2,'idv'=>4]); 
+        DB::table('menu_vistas')->insert(['idmenu'=>3,'idv'=>5]); 
+        DB::table('menu_vistas')->insert(['idmenu'=>4,'idv'=>6]); 
+        DB::table('menu_vistas')->insert(['idmenu'=>4,'idv'=>7]); 
  
 
         $user = new \App\Models\User(); 

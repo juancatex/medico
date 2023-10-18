@@ -12570,3 +12570,8 @@ textarea.form-control {
 .errorinput{
     border: 2px solid rgba(244, 67, 54, 0.89)  !important;
 }
+.cuadrogestacion{
+    border: 1px solid #80808047;
+    /* border-radius: 6px; */
+    padding: calc(var(--bs-gutter-x) * .5);
+}

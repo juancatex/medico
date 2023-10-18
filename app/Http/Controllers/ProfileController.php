@@ -119,6 +119,51 @@ class ProfileController extends Controller
             'lista' =>  $pacientes, 
         ]);
     }
+    public function listarPacienteGestacionActual(Request $request): Response
+    {
+          
+        $pacientes= User::where('activo',1)
+        ->where('idrol',4) ;
+        if(!empty($request->search)){ 
+            $pacientes=$pacientes->where('name','like',"%$request->search%") ; 
+        }
+        $pacientes=$pacientes->orderBy('name')->paginate(5); 
+         
+        return Inertia::render('GestacionActual', [ 
+            'lista' =>  $pacientes, 
+        ]);
+    }
+    public function listarPacienteControlprenatal(Request $request): Response
+    {
+          
+        $pacientes= User::where('activo',1)
+        ->where('idrol',4) ;
+        if(!empty($request->search)){ 
+            $pacientes=$pacientes->where('name','like',"%$request->search%") ; 
+        }
+        $pacientes=$pacientes->orderBy('name')->paginate(5); 
+         
+        return Inertia::render('ControlPrenatal', [ 
+            'lista' =>  $pacientes, 
+        ]);
+    }
+    public function listarPacienteControlprenataltrat(Request $request): Response
+    {
+          
+        $pacientes= User::select('users.*','control_prenatals.idprenat','control_prenatals.responsable')
+        ->join("control_prenatals","control_prenatals.iduser","=","users.id")
+        ->where('users.activo',1)
+        ->where('users.idrol',4)
+        ->where('control_prenatals.asisfecha',date("Y-m-d"));
+        if(!empty($request->search)){ 
+            $pacientes=$pacientes->where('name','like',"%$request->search%") ; 
+        }
+        $pacientes=$pacientes->orderBy('name')->paginate(5); 
+         
+        return Inertia::render('ControlPrenatalTrat', [ 
+            'lista' =>  $pacientes, 
+        ]);
+    }
     public function listarDoctor(Request $request): Response
     {
         $Pacientes= User::where('activo',1)
