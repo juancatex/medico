@@ -12589,3 +12589,6 @@ textarea.form-control {
 .swal-pdf{
     width: 70% !important;
 }
+.slimscroll{
+overflow: auto;
+}
