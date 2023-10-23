@@ -15,6 +15,11 @@ use App\Models\Rolmenu;
 use App\Models\MenuVista;
 use App\Models\Departamento;
 use App\Models\Provincia;
+use App\Models\GestacionActual;
+use App\Models\Antecedente;
+use App\Models\ControlPrenatal;
+use Illuminate\Support\Facades\DB;
+use PDF;
 
 class ProfileController extends Controller
 {
@@ -53,13 +58,12 @@ class ProfileController extends Controller
     }
     public function listarPaciente(Request $request): Response
     {
-          
-        $pacientes= User::where('activo',1)
-        ->where('idrol',4) ;
+        $raw=DB::raw('DATE_FORMAT(users.created_at,"%Y") as gestion');  
+        $pacientes= User::select('users.*',$raw)->where('idrol',4) ;
         if(!empty($request->search)){ 
             $pacientes=$pacientes->where('name','like',"%$request->search%") ; 
         }
-        $pacientes=$pacientes->orderBy('name')->paginate(5); 
+        $pacientes=$pacientes->orderBy('name')->orderBy('gestion')->paginate(5); 
         
         $dep= Departamento::where('activo',1)->orderBy('iddepartamento')->get();    
 
@@ -134,6 +138,58 @@ class ProfileController extends Controller
         ]);
     }
     public function listarPacienteControlprenatal(Request $request): Response
+    {  
+
+        $pacientes= User::select('users.*','control_prenatals.responsable')
+        ->leftJoin('control_prenatals', function($join) {
+            $join->on('control_prenatals.iduser', '=', 'users.id')->where('control_prenatals.asisfecha',date("Y-m-d"));
+          })
+        ->where('users.activo',1)
+        ->where('users.idrol',4) ;
+        if(!empty($request->search)){ 
+            $pacientes=$pacientes->where('users.name','like',"%$request->search%") ; 
+        }
+        $pacientes=$pacientes->orderBy('users.name')->with("getmayor")->with("getante")->with("getgest")->paginate(5); 
+         
+        return Inertia::render('ControlPrenatal', [ 
+            'lista' =>  $pacientes, 
+        ]);
+    }
+    public function listarPacienteCarnetperinatal(Request $request): Response
+    {
+        $raw=DB::raw('DATE_FORMAT(users.fechanacimiento, "%d  %m  %y") as fechanacimientoo');   
+        $pacientes= User::select('users.*','departamentos.nomdepartamento','provincias.nomprovincia', $raw)
+        ->join("departamentos","departamentos.iddepartamento","=","users.iddepartamento")
+        ->join("provincias","provincias.idprovincia","=","users.idprovincia")
+        ->where('users.idrol',4) 
+        ->where('users.id',Auth::id()) 
+        ->where('users.activo',1) 
+        ->first(); 
+        // Auth::id()
+        $raw2=DB::raw('DATE_FORMAT(antecedentes.finembarazoanterior, "%d  %m  %y") as finembarazoanteriorr');  
+        $ante=Antecedente::select('antecedentes.*',$raw2)->where('iduser', Auth::id())->first(); 
+
+        $raw3=DB::raw('DATE_FORMAT(gestacion_actuals.fppdate, "%d  %m  %y") as fppdatee');  
+        $raw4=DB::raw('DATE_FORMAT(gestacion_actuals.fumdate, "%d  %m  %y") as fumdatee');  
+        $gest=GestacionActual::select('gestacion_actuals.*',$raw3,$raw4)->where('iduser', Auth::id())->first();
+
+        $raw5=DB::raw('DATE_FORMAT(control_prenatals.asisfecha, "%d  %m  %y") as asisfechaa');  
+        $raw6=DB::raw('DATE_FORMAT(control_prenatals.proximacita, "%d  %m  %y") as proximacitaa');  
+        $controles=ControlPrenatal::select('control_prenatals.*','users.name','users.matricula',$raw5,$raw6) 
+        ->leftJoin('users', function($join) {
+         $join->on('users.id', '=', 'control_prenatals.responsable')->where('users.activo',1);
+       })
+       ->where('control_prenatals.iduser', Auth::id())
+       ->orderBy('control_prenatals.idprenat', 'asc')->get();   
+
+        return Inertia::render('CarnetPerinatal', [ 
+            'paciente' =>  $pacientes, 
+            'ante' =>  $ante, 
+            'gest' =>  $gest, 
+            'controles' =>  $controles, 
+        ]);
+    }
+    public function listarPacienteCarnetperinatalLista(Request $request): Response
     {
           
         $pacientes= User::where('activo',1)
@@ -143,10 +199,48 @@ class ProfileController extends Controller
         }
         $pacientes=$pacientes->orderBy('name')->paginate(5); 
          
-        return Inertia::render('ControlPrenatal', [ 
+        return Inertia::render('CarnetPerinatalList', [ 
             'lista' =>  $pacientes, 
         ]);
     }
+    public function pdflistadoin(Request $request)
+    {
+        
+       $raw=DB::raw('DATE_FORMAT(users.fechanacimiento, "%d  %m  %y") as fechanacimientoo');   
+        $pacientes= User::select('users.*','departamentos.nomdepartamento','provincias.nomprovincia', $raw)
+        ->join("departamentos","departamentos.iddepartamento","=","users.iddepartamento")
+        ->join("provincias","provincias.idprovincia","=","users.idprovincia")
+        ->where('users.idrol',4) 
+        ->where('users.id',$request->id) 
+        ->where('users.activo',1) 
+        ->first(); 
+        // Auth::id()
+        $raw2=DB::raw('DATE_FORMAT(antecedentes.finembarazoanterior, "%d  %m  %y") as finembarazoanteriorr');  
+        $ante=Antecedente::select('antecedentes.*',$raw2)->where('iduser',$request->id)->first(); 
+
+        $raw3=DB::raw('DATE_FORMAT(gestacion_actuals.fppdate, "%d  %m  %y") as fppdatee');  
+        $raw4=DB::raw('DATE_FORMAT(gestacion_actuals.fumdate, "%d  %m  %y") as fumdatee');  
+        $gest=GestacionActual::select('gestacion_actuals.*',$raw3,$raw4)->where('iduser',$request->id)->first();
+
+        $raw5=DB::raw('DATE_FORMAT(control_prenatals.asisfecha, "%d  %m  %y") as asisfechaa');  
+        $raw6=DB::raw('DATE_FORMAT(control_prenatals.proximacita, "%d  %m  %y") as proximacitaa');  
+        $controles=ControlPrenatal::select('control_prenatals.*','users.name','users.matricula',$raw5,$raw6) 
+        ->leftJoin('users', function($join) {
+         $join->on('users.id', '=', 'control_prenatals.responsable')->where('users.activo',1);
+       })
+       ->where('control_prenatals.iduser', $request->id)
+       ->orderBy('control_prenatals.idprenat', 'asc')->get();   
+
+
+
+        return   [ 
+            'paciente' =>  $pacientes, 
+            'ante' =>  $ante, 
+            'gest' =>  $gest, 
+            'controles' =>  $controles, 
+        ];
+    }
+   
     public function listarPacienteControlprenataltrat(Request $request): Response
     {
           
@@ -397,6 +491,7 @@ class ProfileController extends Controller
     { 
         $activo = User::findOrFail($request->id);
         $activo->activo = 0; 
+        $activo->email =null; 
         $activo->save(); 
  
         return redirect('/Paciente');
@@ -471,5 +566,126 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function rep1(Request $request)
+    {
+        DB::statement("SET lc_time_names = 'es_ES'");
+        $raw=DB::raw('DATE_FORMAT(users.created_at, "%M") as mess');   
+        $pacientes= User::select('users.*',$raw)->where('activo',1)
+        ->where('idrol',4)
+        ->orderBy('mess')
+        ->orderBy('name')
+        ->get(); 
+        $pdf = PDF::loadView('Reportes/vistas/reporte1', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte1', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep2(Request $request)
+    {
+        DB::statement("SET lc_time_names = 'es_ES'"); 
+        $pacientes= User::select('users.*')->where('activo',1)
+        ->where('idrol',4) 
+        ->orderBy('name')
+        ->get(); 
+        $pdf = PDF::loadView('Reportes/vistas/reporte2', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte2', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep3(Request $request)
+    {
+        DB::statement("SET lc_time_names = 'es_ES'"); 
+        $pacientes= User::select('users.*','antecedentes.embarazoplaneado')
+        ->join("antecedentes","antecedentes.iduser","=","users.id")
+        ->where('activo',1)
+        ->where('idrol',4)
+        ->whereNotNull('antecedentes.embarazoplaneado') 
+        ->orderBy('name')
+        ->get(); 
+        $pdf = PDF::loadView('Reportes/vistas/reporte3', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte3', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep4(Request $request)
+    {  
+        $pacientes= User::select('users.*')->where('activo',1)
+        ->where('idrol',4) 
+        ->orderBy('name')
+        ->get(); 
+        $pdf = PDF::loadView('Reportes/vistas/reporte4', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte4', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep5(Request $request)
+    {
+        DB::statement("SET lc_time_names = 'es_ES'"); 
+        $pacientesij= User::select('antecedentes.fracasometodo',DB::raw('count(*) as total'))
+        ->join("antecedentes","antecedentes.iduser","=","users.id")
+        ->where('activo',1)
+        ->where('idrol',4)
+        ->whereNotNull('antecedentes.fracasometodo') 
+        ->groupBy('antecedentes.fracasometodo') 
+        ->get(); 
+
+        $mayor=0; 
+        $fracasometodo=0; 
+        foreach ($pacientesij as $data) {
+           if($data->total > $mayor){
+             $mayor=$data->total; 
+             $fracasometodo=$data->fracasometodo;
+           }
+        }
+        $pacientes= User::select('users.*','antecedentes.fracasometodo')
+        ->join("antecedentes","antecedentes.iduser","=","users.id")
+        ->where('activo',1)
+        ->where('idrol',4)
+        ->where('antecedentes.fracasometodo',$fracasometodo)
+        ->whereNotNull('antecedentes.fracasometodo') 
+        ->orderBy('name')
+        ->get(); 
+
+        $pdf = PDF::loadView('Reportes/vistas/reporte5', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte5', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep6(Request $request)
+    {
+        DB::statement("SET lc_time_names = 'es_ES'");  
+        $pacientes= User::select('users.*','antecedentes.vih')
+        ->join("antecedentes","antecedentes.iduser","=","users.id")
+        ->where('activo',1)
+        ->where('idrol',4)
+        ->where('antecedentes.vih',1)
+        ->whereNotNull('antecedentes.vih') 
+        ->orderBy('name')
+        ->get(); 
+
+        $pdf = PDF::loadView('Reportes/vistas/reporte6', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte6', [ 
+            'pdf' =>  $datopdf
+        ]);
+    }
+    public function rep7(Request $request)
+    {  
+        $pacientes= User::select('users.*')->where('activo',1)
+        ->where('idrol',4) 
+        ->orderBy('name')
+        ->get(); 
+        $pdf = PDF::loadView('Reportes/vistas/reporte7', ['data'=>$pacientes]); 
+        $datopdf=base64_encode($pdf->output());
+        return Inertia::render('Reportes/Reporte7', [ 
+            'pdf' =>  $datopdf
+        ]);
     }
 }

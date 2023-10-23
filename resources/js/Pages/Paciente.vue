@@ -88,6 +88,38 @@ function modalupdate(paciente){
        
     $('#registropacientes').modal('show'); 
 }
+function modalupdatecopy(paciente){
+    updatemodal.value=false;
+    form.clearErrors();
+    form.reset(); 
+    form.iddepartamento=paciente.iddepartamento;
+    cambiadepartamento();
+    form.idrol=4;
+    form.idprovincia=paciente.idprovincia;
+    form.name=paciente.name  
+    form.fechanacimiento=paciente.fechanacimiento; 
+    form.telefono=paciente.telefono; 
+    form.dir=paciente.dir; 
+    form.foto=paciente.foto; 
+    form.zona=paciente.zona;
+    form.red=paciente.red;
+    form.idioma=paciente.idioma;
+    form.lengua=paciente.lengua;
+    form.edad=paciente.edad;
+    form.autoidentificacion=paciente.autoidentificacion;
+    form.alfabeta=paciente.alfabeta;
+    form.estudios=paciente.estudios;
+    form.nivelanios=paciente.nivelanios;
+    form.estadocivil=paciente.estadocivil;
+    form.vivesola=paciente.vivesola;
+    form.controlprenatalen=paciente.controlprenatalen;
+    form.partoen=paciente.partoen;
+    form.cip=paciente.cip;
+    form.ci=paciente.ci;
+    form.numhisclinico=paciente.numhisclinico;
+       
+    $('#registropacientes').modal('show'); 
+}
 const componentName = getCurrentInstance()?.type.__name
 const ok =(msj)=>{ 
     closeModal();
@@ -202,6 +234,7 @@ onMounted(() => {
                                             <tr>
                                                  
                                                 <th>Nombre completo</th>
+                                                <th>Gestion </th>
                                                 <th>C.I.</th>
                                                 <th>Fecha de Nacimiento</th>
                                                 <th>N° Historial Clinico</th>
@@ -216,7 +249,8 @@ onMounted(() => {
                                                 <td class="profile-image"><img width="28"
                                                                                 height="28" :src="paciente.foto?paciente.foto:'assets/img/user.jpg'"
                                                                                 class="rounded-circle m-r-5" alt="">{{ paciente.name}}</td> 
-                                                <td class="align-middle" style="text-align: center;">{{ paciente.cip }}</td>
+                                                <td class="align-middle" style="text-align: center;">{{ paciente.gestion }}</td>
+                                                <td class="align-middle" style="text-align: center;">{{ paciente.cip }}</td> 
                                                 <td class="align-middle" style="text-align: center;">{{ paciente.fechanacimiento }}</td>
                                                 <td class="align-middle" style="text-align: center;">{{ paciente.numhisclinico }}</td>
                                                 <td class="align-middle" style="text-align: right;">{{ paciente.controlprenatalen }}</td> 
@@ -224,13 +258,18 @@ onMounted(() => {
                                                 
 
                                                 <td class="text-end">
-                                                                        <button @click="modalupdate(paciente)"
+                                                                        <button v-if="paciente.activo" @click="modalupdate(paciente)"
                                                                             class="btn btn-sm btn-white text-success me-2"><i
                                                                                 class="far fa-edit me-1"></i> Editar</button>
+                                                                        <div v-else class="custom-badge status-red submit-form  me-2">Inactico</div>
 
-                                                                        <button @click="EliminarDatos(paciente.id)"
+                                                                        <button v-if="paciente.activo" @click="EliminarDatos(paciente.id)"
                                                                             class="btn btn-sm btn-white text-danger"><i
-                                                                                class="far fa-trash-alt me-1"></i>Eliminar</button>
+                                                                                class="far fa-window-close me-1"></i>Inactivar</button>
+
+                                                                        <button v-else @click="modalupdatecopy(paciente)"
+                                                                            class="btn btn-sm btn-white text-warning"><i
+                                                                                class="far fa-copy me-1"></i>Copiar</button>
                                                 </td>
                                             </tr> 
                                         </tbody>

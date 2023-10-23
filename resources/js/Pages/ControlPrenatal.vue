@@ -34,7 +34,8 @@ watch(searchField, debounce(() => {
     router.get('/ControlPrenatal', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
 }, 300));
 
-function openlistado(paciente){
+function openlistado(paciente){ 
+    paciente.responsable=true;
     modalname.value=paciente.name;
     Swal.fire({
             title: "Obteniendo los datos...",
@@ -57,6 +58,22 @@ function openlistado(paciente){
         text: 'El usuario no cuenta con registros previos.' 
         });
        }
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+}
+
+function validate3(paciente){
+   
+    modalname.value=paciente.name;
+    
+    var url= '/obtenerregistros?id='+paciente.id;
+    axios.get(url).then(function (response) {    
+       if(response.data instanceof Object&&response.data.length>0){
+        console.log(response.data); 
+        paciente.responsable=true;
+       } 
     })
     .catch(function (error) {
         console.log(error);
@@ -96,7 +113,51 @@ const guardarDatos=()=>{
     form.post(route('RegControlPrenatal'),{onSuccess:()=>{ok('Registrado correctamente')}  });
 };
  
-  
+function porcentaje(datos){
+  if(datos!=null){
+    const arrayin=Object.values(datos);
+    var counter=0;
+                for (let value of arrayin) { 
+                    if(value!=null){
+                        counter++;
+                    }
+                }
+   
+        return redondeo_valor((100*counter)/arrayin.length) ;
+  }else{
+    return 0;
+  }
+
+}
+function redondeo_valor(num, decimales = 2, redoncero = true) {
+  var signo = (num >= 0 ? 1 : -1);
+  num = num * signo;
+  if (decimales === 0)
+    return signo * Math.round(num);
+  num = num.toString().split('e');
+  num = Math.round(+(num[0] + 'e' + (num[1] ? (+num[1] + decimales) : decimales)));
+  num = num.toString().split('e');
+  if (redoncero) {
+    return fillDecimals(signo * (num[0] + 'e' + (num[1] ? (+num[1] - decimales) : -decimales)), decimales);
+  } else {
+    return (signo * (num[0] + 'e' + (num[1] ? (+num[1] - decimales) : -decimales)));
+  }
+
+}
+
+ function fillDecimals(number, length = 2) {
+  function pad(input, length, padding) {
+    var str = input + "";
+    return (length <= str.length) ? str : pad(str + padding, length, padding);
+  }
+  var str = number + "";
+  var dot = str.lastIndexOf('.');
+  var isDecimal = dot != -1;
+  var integer = isDecimal ? str.substr(0, dot) : str;
+  var decimals = isDecimal ? str.substr(dot + 1) : "";
+  decimals = pad(decimals, length, 0);
+  return integer + '.' + decimals;
+}
 onMounted(() => { 
       console.log(componentName); 
     });
@@ -155,6 +216,8 @@ onMounted(() => {
                                                 <th class="align-middle" style="text-align: center;">Nombre completo</th>
                                                 <th class="align-middle" style="text-align: center;">C.I.</th> 
                                                 <th class="align-middle" style="text-align: center;">N° Historial Clinico</th>
+                                                <th class="align-middle" style="text-align: center;">xx antecedentes</th>
+                                                <th class="align-middle" style="text-align: center;">xx gestacion</th>
                                                 <th class="align-middle" style="text-align: center;">Control prenatal</th>   
                                                 <th></th>
                                             </tr>
@@ -167,10 +230,15 @@ onMounted(() => {
                                                                                 class="rounded-circle m-r-5" alt="">{{ paciente.name}}</td> 
                                                 <td class="align-middle" style="text-align: center;">{{ paciente.cip }}</td> 
                                                 <td class="align-middle" style="text-align: center;">{{ paciente.numhisclinico }}</td>
+                                                <td class="align-middle" style="text-align: center;">{{ porcentaje(paciente.getante) }}%</td>
+                                                <td class="align-middle" style="text-align: center;">{{ porcentaje(paciente.getgest) }}%</td>
                                                 <td class="align-middle" style="text-align: center;">{{ paciente.controlprenatalen }}</td>  
                                                 
 
                                                 <td class="text-end">
+                                                  
+                                                                        <div v-if="paciente.getmayor" class="custom-badge status-blue submit-form  me-2"><div v-if="paciente.getmayor.responsable" >Atendido</div> </div>
+
                                                                         <button @click="openlistado(paciente)"
                                                                             class="btn btn-sm  btn-primary submit-form  me-2"><i
                                                                                 class="fa-solid fa-search me-1"></i>Ver estado</button>

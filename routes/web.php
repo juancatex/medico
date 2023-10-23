@@ -45,10 +45,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userin', [ProfileController::class, 'userin'])->name('userin');
 
+    Route::get('/CarnetPerinatal', [ProfileController::class, 'listarPacienteCarnetperinatal'])->name('CarnetPerinatal');  
+    Route::get('/CarnetperinatalLista', [ProfileController::class, 'listarPacienteCarnetperinatalLista'])->name('CarnetperinatalLista');  
+    Route::get('/pdflistadoin', [ProfileController::class, 'pdflistadoin'])->name('pdflistadoin');  
     Route::get('/ControlPrenatal', [ProfileController::class, 'listarPacienteControlprenatal'])->name('ControlPrenatal');  
     Route::get('/ControlPrenatalTrat', [ProfileController::class, 'listarPacienteControlprenataltrat'])->name('ControlPrenatalTrat');  
     Route::get('/GestacionActual', [ProfileController::class, 'listarPacienteGestacionActual'])->name('GestacionActual');  
     Route::get('/Antecedentes', [ProfileController::class, 'listarPacienteAntecedente'])->name('Antecedentes'); 
+
+    Route::get('/Reporte1', [ProfileController::class, 'rep1'])->name('Reporte1'); 
+    Route::get('/Reporte2', [ProfileController::class, 'rep2'])->name('Reporte2'); 
+    Route::get('/Reporte3', [ProfileController::class, 'rep3'])->name('Reporte3'); 
+    Route::get('/Reporte4', [ProfileController::class, 'rep4'])->name('Reporte4'); 
+    Route::get('/Reporte5', [ProfileController::class, 'rep5'])->name('Reporte5'); 
+    Route::get('/Reporte6', [ProfileController::class, 'rep6'])->name('Reporte6'); 
+    Route::get('/Reporte7', [ProfileController::class, 'rep7'])->name('Reporte7'); 
 
     Route::get('/obtenerregistros', [ControlPrenatalController::class, 'getregistros'])->name('obtenerregistros'); 
     Route::get('/obtenerregistrostrat', [ControlPrenatalController::class, 'getregistrostrat'])->name('obtenerregistrostrat'); 

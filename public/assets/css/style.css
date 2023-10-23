@@ -12575,3 +12575,17 @@ textarea.form-control {
     /* border-radius: 6px; */
     padding: calc(var(--bs-gutter-x) * .5);
 }
+
+@keyframes rotatei {from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}}
+@-webkit-keyframes rotatei {from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}}
+.rotatei{
+    -webkit-animation: 2s rotatei linear infinite;
+    animation: 2s rotatei linear infinite;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%; 
+}
+.swal-pdf{
+    width: 70% !important;
+}

@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { debounce } from 'lodash';
 const searchField=ref('');
 const modalname=ref(''); 
+const tresconsecutivos=ref(null); 
 const props =defineProps({ 
     lista: {
         type: Object,
@@ -55,6 +56,9 @@ const form = useForm({
 watch(searchField, debounce(() => { 
     router.get('/Antecedentes', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
 }, 300));
+watch(tresconsecutivos, () => {  
+   form.tresconsecutivos=tresconsecutivos.value==null?null:(tresconsecutivos.value?1:0)
+} );
 function openantecedentes(paciente){
     modalname.value=paciente.name;
     Swal.fire({
@@ -456,8 +460,8 @@ onMounted(() => {
                                                 </td>
                                                 <td style="width: 75px;">
                                                     <TextInput class="form-control" type="number" v-model="form.abortos" :class="form.errors.abortos?'errorinput':''"></TextInput>
-                                                      <label class="form-check-label" style="font-size: x-small;">
-                                                               <TextInput class="form-check-input mt-0 m-1" name="tresconsecutivos"   type="checkbox" v-model="form.tresconsecutivos"  />3 espont.   
+                                                      <label class="form-check-label" style="font-size: x-small;">  
+                                                               <input class="form-check-input mt-0 m-1" :class="form.errors.tresconsecutivos?'errorinput':''" name="tresconsecutivos"  type="checkbox" v-model="tresconsecutivos" />3 espont.  
                                                       </label> 
                                                 </td>
                                                 <td>

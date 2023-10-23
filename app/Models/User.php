@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -70,4 +72,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function controles():HasMany 
+    {
+        return $this->hasMany(ControlPrenatal::class,"iduser");
+    }
+    public function getmayor():HasOne 
+    {
+        return $this->hasOne(ControlPrenatal::class,"iduser")->ofMany('edadgest', 'max');
+    }
+    public function getante():HasOne 
+    {
+        return $this->hasOne(Antecedente::class,"iduser");
+    }
+    public function getgest():HasOne 
+    {
+        return $this->hasOne(GestacionActual::class,"iduser");
+    }
 }

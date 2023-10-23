@@ -49,6 +49,61 @@ onMounted(() => {
                 </div>
             </div>
         </div>
+        <div class="row">
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                        <div class="dash-widget">
+                            <div class="dash-boxs comman-flex-center">
+                                <img src="assets/img/icons/calendar.svg" alt="">
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4>Appointments</h4>
+                                <h2><span class="counter-up">250</span></h2>
+                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
+                                    last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                        <div class="dash-widget">
+                            <div class="dash-boxs comman-flex-center">
+                                <img src="assets/img/icons/profile-add.svg" alt="">
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4>New Patients</h4>
+                                <h2><span class="counter-up">140</span></h2>
+                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>20%</span> vs
+                                    last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                        <div class="dash-widget">
+                            <div class="dash-boxs comman-flex-center">
+                                <img src="assets/img/icons/scissor.svg" alt="">
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4>Operations</h4>
+                                <h2><span class="counter-up">56</span></h2>
+                                <p><span class="negative-view"><i class="feather-arrow-down-right me-1"></i>15%</span>
+                                    vs last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                        <div class="dash-widget">
+                            <div class="dash-boxs comman-flex-center">
+                                <img src="assets/img/icons/empty-wallet.svg" alt="">
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4>Earnings</h4>
+                                <h2>$<span class="counter-up"> 20,250</span></h2>
+                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>30%</span> vs
+                                    last month</p>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+       
     </div>
     </Menus>
      

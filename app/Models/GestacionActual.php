@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class GestacionActual extends Model
 {
     use HasFactory;
+    protected $fillable = ['iduser'];
+        protected $primaryKey = 'idgesact';  
 }
