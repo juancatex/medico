@@ -344,7 +344,7 @@ onMounted(() => {
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
                                                 <label>Ciudad <span class="login-danger">*</span></label> 
-                                                    <select class="form-control select"
+                                                    <select class="form-control select" :class="form.errors.iddepartamento?'errorinput':''"
                                                         v-model="form.iddepartamento"
                                                         @change="cambiadepartamento"
                                                         ref="input" >  
@@ -359,7 +359,7 @@ onMounted(() => {
                                             <div class="form-group local-forms">
                                                 <label>Provincia <span class="login-danger">*</span></label>
                                               
-                                                    <select class="form-control select"
+                                                    <select class="form-control select" :class="form.errors.idprovincia?'errorinput':''"
                                                         v-model="form.idprovincia" 
                                                         ref="input" >  
                                                         <option value=""  disabled >Seleccione Provincia</option>
@@ -401,10 +401,10 @@ onMounted(() => {
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="form-group local-forms">
+                                            <div class="form-group local-forms ">
                                                 <label>autoidentificacion <span class="login-danger">*</span></label>
                                               
-                                                    <select class="form-control select"
+                                                    <select class="form-control select  " :class="form.errors.autoidentificacion?'errorinput':''"
                                                         v-model="form.autoidentificacion" 
                                                         ref="input" >  
                                                         <option value=""  disabled >Seleccione Autoidentificacion</option>

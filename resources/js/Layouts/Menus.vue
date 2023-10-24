@@ -50,7 +50,7 @@ onBeforeMount(() => {
 </script>
 
 <template> 
-    <div class="main-wrapper">
+  
         <div class="header">
             <div class="header-left">
                 <div class="logo">
@@ -108,5 +108,5 @@ onBeforeMount(() => {
         <div class="page-wrapper">
             <slot />
         </div>
-    </div>
+    
 </template>

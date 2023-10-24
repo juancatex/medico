@@ -301,7 +301,7 @@ watch(searchField, debounce(() => {
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms">
                                                 <label>Ciudad <span class="login-danger">*</span></label> 
-                                                    <select class="form-control select"
+                                                    <select class="form-control select"  :class="form.errors.iddepartamento?'errorinput':''"
                                                         v-model="form.iddepartamento"
                                                         @change="cambiadepartamento"
                                                         ref="input" >  
@@ -316,7 +316,7 @@ watch(searchField, debounce(() => {
                                             <div class="form-group local-forms">
                                                 <label>Provincia <span class="login-danger">*</span></label>
                                               
-                                                    <select class="form-control select"
+                                                    <select class="form-control select" :class="form.errors.idprovincia?'errorinput':''"
                                                         v-model="form.idprovincia" 
                                                         ref="input" >  
                                                         <option value=""  disabled >Seleccione Provincia</option>
