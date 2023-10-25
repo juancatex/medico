@@ -114,6 +114,9 @@ onMounted(() => {
 watch(searchField, debounce(() => { 
     router.get('/Doctor', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
 }, 300));
+const resetpass=()=>{
+    form.put(route('ActualizarDoctorPass'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
+};
 </script>
 
 <template>
@@ -358,6 +361,8 @@ watch(searchField, debounce(() => {
                                         </div> 
                                         <div class="col-12">
                                             <div class="doctor-submit text-end">
+                                                <button v-if="updatemodal" @click="resetpass"
+                                                    class="btn btn-danger submit-form me-2" :disabled="form.processing">Restablecer contraseña</button>
                                                 <button v-if="updatemodal" @click="actualizarDatos"
                                                     class="btn btn-primary submit-form me-2" :disabled="form.processing">Actualizar</button>
                                                 <button v-else @click="guardarDatos"

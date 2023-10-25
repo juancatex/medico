@@ -7,6 +7,7 @@ import Pagination from '@/Components/Paginations.vue';
 import {getCurrentInstance,onMounted,watch,ref} from 'vue'; 
 import Swal from 'sweetalert2';
 import { debounce } from 'lodash';
+import moment from 'moment';
 const searchField=ref('');
 const updatemodal=ref(false);
 const props =defineProps({ 
@@ -21,6 +22,12 @@ const props =defineProps({
     },   
     autoid: {
         type: Object,
+    },  
+    datemin: {
+        type: String,   
+    },  
+    datemax: {
+        type: String,
     }   
 });
 const form = useForm({ 
@@ -35,7 +42,7 @@ const form = useForm({
     telefono: null,
     idioma:null,
     lengua:null, 
-    fechanacimiento:'',  
+    fechanacimiento:null,  
     email: '', 
     foto:null, 
     edad:null, 
@@ -164,9 +171,23 @@ const guardarDatos=()=>{
 const actualizarDatos=()=>{
     form.put(route('ActualizarPaciente'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
 };
+const resetpass=()=>{
+    form.put(route('ActualizarPacientePass'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
+};
  
 watch(form, debounce(() => { 
-    form.ci=form.cip.replace(/\D/g, '');
+    form.ci=form.cip!=null?form.cip.replace(/\D/g, ''):'';
+}, 300));
+watch(form, debounce(() => { 
+   
+if(form.fechanacimiento!=null){
+  const nacimiento=moment(form.fechanacimiento);
+  var hoy=moment();
+  var anios=hoy.diff(nacimiento,"years");
+  form.edad=anios;
+}
+   
+
 }, 300));
 watch(searchField, debounce(() => { 
     router.get('/Paciente', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
@@ -372,7 +393,7 @@ onMounted(() => {
                                         <div class="col-12 col-md-6 col-xl-4">
                                             <div class="form-group local-forms ">
                                                 <label>Fecha de nacimiento<span class="login-danger">*</span></label> 
-                                                <TextInput class="form-control datetimepicker" type="date" v-model="form.fechanacimiento" :class="form.errors.fechanacimiento?'errorinput':''"></TextInput>
+                                                <input class="form-control datetimepicker" :min="datemax" :max="datemin" type="date" v-model="form.fechanacimiento" :class="form.errors.fechanacimiento?'errorinput':''"/>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-4">
@@ -555,7 +576,9 @@ onMounted(() => {
  
                                         <div class="col-12">
                                             <div class="doctor-submit text-end">
-                                                <button v-if="updatemodal" @click="actualizarDatos"
+                                                <button v-if="updatemodal" @click="resetpass"
+                                                    class="btn btn-danger submit-form me-2" :disabled="form.processing">Restablecer contraseña</button>
+                                                    <button v-if="updatemodal" @click="actualizarDatos"
                                                     class="btn btn-primary submit-form me-2" :disabled="form.processing">Actualizar</button>
                                                 <button v-else @click="guardarDatos"
                                                     class="btn btn-primary submit-form me-2" :disabled="form.processing">Registrar</button>

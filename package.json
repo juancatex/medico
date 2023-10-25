@@ -21,6 +21,7 @@
     "dependencies": {
         "jspdf": "^2.5.1",
         "lodash": "^4.17.21",
+        "moment": "^2.29.4",
         "sweetalert2": "^11.7.31"
     }
 }

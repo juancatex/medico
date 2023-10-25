@@ -81,7 +81,9 @@ const guardarDatos=()=>{
 const actualizarDatos=()=>{
     form.put(route('ActualizarEnfermera'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
 };
- 
+const resetpass=()=>{
+    form.put(route('ActualizarEnfPass'),{onSuccess:()=>{ok('Modificado correctamente')}  }); 
+};
 const EliminarDatos=(id)=>{
     
     const alerta=Swal.mixin({buttonsStyling:true});
@@ -358,6 +360,8 @@ watch(searchField, debounce(() => {
                                         </div> 
                                         <div class="col-12">
                                             <div class="doctor-submit text-end">
+                                                <button v-if="updatemodal" @click="resetpass"
+                                                    class="btn btn-danger submit-form me-2" :disabled="form.processing">Restablecer contraseña</button>
                                                 <button v-if="updatemodal" @click="actualizarDatos"
                                                     class="btn btn-primary submit-form me-2" :disabled="form.processing">Actualizar</button>
                                                 <button v-else @click="guardarDatos"

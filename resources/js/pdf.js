@@ -1188,16 +1188,16 @@ var diabetesf=antecedentes.diabetesf; //diabetesf
             }
             if(element.tratamientos!=null){ 
                 doc.setFontSize(7);
-                doc.text(element.tratamientos.toString(),12,11); 
+                doc.text(element.tratamientos.toString(),12,posy); 
                 doc.setFontSize(9);
             }
             if(element.matricula!=null){ 
                 doc.setFontSize(5);
-                doc.text(element.matricula.toString(),17.8,11);  
+                doc.text(element.matricula.toString(),17.8,posy);  
             }
             if(element.proximacitaa!=null){ 
                 doc.setFontSize(9);
-                doc.text(element.proximacitaa.toString(),19,11);  
+                doc.text(element.proximacitaa.toString(),19,posy);  
             }
             posy+=0.52; 
         });

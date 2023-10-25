@@ -6,9 +6,7 @@ use App\Http\Controllers\GestacionActualController;
 use App\Http\Controllers\ControlPrenatalController;
 use Illuminate\Foundation\Application;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Route; 
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -30,16 +28,18 @@ Route::get('/', function () {
     }
 });
 
-Route::get('/dashboard', function () {
-    $now = Carbon::now(); 
-    return Inertia::render('Dashboard',['time'=>$now->format('A'),'name'=>Auth::user()->name]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     $now = Carbon::now(); 
+//     return Inertia::render('Dashboard',['time'=>$now->format('A'),'name'=>Auth::user()->name]);
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::fallback(function () {
     return redirect('/');
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -74,7 +74,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/Paciente', [ProfileController::class, 'listarPaciente'])->name('Pacientes'); 
     Route::post('/RegPaciente', [ProfileController::class, 'storePaciente'])->name('RegPaciente'); 
-    Route::put('/ActualizarPaciente', [ProfileController::class, 'updatePaciente'])->name('ActualizarPaciente'); 
+    Route::put('/ActualizarPaciente', [ProfileController::class, 'updatePaciente'])->name('ActualizarPaciente');  
     Route::post('/EliminarPaciente', [ProfileController::class, 'deletepaciente'])->name('EliminarPaciente'); 
 
     Route::get('/Enfermera', [ProfileController::class, 'listarEnfermera'])->name('Enfermeras'); 
@@ -86,6 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/RegDoctor', [ProfileController::class, 'storedoctor'])->name('RegDoctor'); 
     Route::put('/ActualizarDoctor', [ProfileController::class, 'updatedoctor'])->name('ActualizarDoctor'); 
     Route::post('/EliminarDoctor', [ProfileController::class, 'deletedoctor'])->name('EliminarDoctor'); 
+
+    Route::put('/ActualizarPacientePass', [ProfileController::class, 'resetpassPaciente'])->name('ActualizarPacientePass'); 
+    Route::put('/ActualizarDoctorPass', [ProfileController::class, 'resetpassDoc'])->name('ActualizarDoctorPass'); 
+    Route::put('/ActualizarEnfPass', [ProfileController::class, 'resetpassEnf'])->name('ActualizarEnfPass'); 
 });
 
 require __DIR__.'/auth.php';

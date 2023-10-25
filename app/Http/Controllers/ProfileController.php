@@ -19,13 +19,52 @@ use App\Models\GestacionActual;
 use App\Models\Antecedente;
 use App\Models\ControlPrenatal;
 use Illuminate\Support\Facades\DB;
-use PDF;
+use PDF; 
+use Illuminate\Support\Carbon;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
+    public function dashboard(): Response
+    {
+        $raw=DB::raw('DATE_FORMAT(users.fechanacimiento, "%d  %m  %y") as fechanacimientoo');   
+        $pacientes= User::select('users.*','departamentos.nomdepartamento','provincias.nomprovincia', $raw)
+        ->join("departamentos","departamentos.iddepartamento","=","users.iddepartamento")
+        ->join("provincias","provincias.idprovincia","=","users.idprovincia")
+        ->where('users.idrol',4) 
+        ->where('users.id',Auth::id()) 
+        ->where('users.activo',1) 
+        ->first(); 
+        // Auth::id()
+        $raw2=DB::raw('DATE_FORMAT(antecedentes.finembarazoanterior, "%d  %m  %y") as finembarazoanteriorr');  
+        $ante=Antecedente::select('antecedentes.*',$raw2)->where('iduser', Auth::id())->first(); 
+
+        $raw3=DB::raw('DATE_FORMAT(gestacion_actuals.fppdate, "%d  %m  %y") as fppdatee');  
+        $raw4=DB::raw('DATE_FORMAT(gestacion_actuals.fumdate, "%d  %m  %y") as fumdatee');  
+        $gest=GestacionActual::select('gestacion_actuals.*',$raw3,$raw4)->where('iduser', Auth::id())->first();
+
+        $raw5=DB::raw('DATE_FORMAT(control_prenatals.asisfecha, "%d  %m  %y") as asisfechaa');  
+        $raw6=DB::raw('DATE_FORMAT(control_prenatals.proximacita, "%d  %m  %y") as proximacitaa');  
+        $controles=ControlPrenatal::select('control_prenatals.*','users.name','users.matricula',$raw5,$raw6) 
+        ->leftJoin('users', function($join) {
+         $join->on('users.id', '=', 'control_prenatals.responsable')->where('users.activo',1);
+       })
+       ->where('control_prenatals.iduser', Auth::id())
+       ->orderBy('control_prenatals.idprenat', 'asc')->get();   
+
+         
+        $now = Carbon::now(); 
+        return Inertia::render('Dashboard',[
+            'time'=>$now->format('A'),
+            'user'=>Auth::user(),
+            'paciente' =>  $pacientes, 
+            'ante' =>  $ante, 
+            'gest' =>  $gest, 
+            'controles' =>  $controles,
+        ]);
+    }
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
@@ -48,11 +87,17 @@ class ProfileController extends Controller
         if(!empty($request->dep)){
             $prov= Provincia::where('activo',1)->where('iddepartamento',$request->dep)->orderBy('nomprovincia')->get(); 
         } 
-
+        $fechaactual = date('Y-m-d'); 
+        $fechamin = strtotime ('-1 year' , strtotime($fechaactual));  
+        $fechamin = date ('Y-m-d',$fechamin);
+        $fechamax = strtotime ('-40 year' , strtotime($fechaactual));  
+        $fechamax = date ('Y-m-d',$fechamax);
         return Inertia::render('Enfermera', [ 
             'lista' =>  $enfermeras,
             'dep' =>  $dep,
             'prov' =>  $prov,
+            'datemin' =>   $fechamin,
+            'datemax' => $fechamax,
         ]);
 
     }
@@ -101,12 +146,18 @@ class ProfileController extends Controller
                 "name" => "Otra"
             ]
         ];
-       
+        $fechaactual = date('Y-m-d'); 
+        $fechamin = strtotime ('-1 year' , strtotime($fechaactual));  
+        $fechamin = date ('Y-m-d',$fechamin);
+        $fechamax = strtotime ('-40 year' , strtotime($fechaactual));  
+        $fechamax = date ('Y-m-d',$fechamax);
         return Inertia::render('Paciente', [ 
             'lista' =>  $pacientes,
             'dep' =>  $dep,
             'prov' =>  $prov,
             'autoid' =>  $autoidentificacion,
+            'datemin' =>   $fechamin,
+            'datemax' => $fechamax,
         ]);
     }
     public function listarPacienteAntecedente(Request $request): Response
@@ -319,6 +370,20 @@ class ProfileController extends Controller
     }
     public function storePaciente(Request $request)
     { 
+        $fechain = date('Y-m-d',strtotime($request->fechanacimiento. " 00:00:00")); 
+        $fechaactual = date('Y-m-d'); 
+        $fechamin = strtotime ('-40 year' , strtotime($fechaactual));  
+        $fechamin = date ('Y-m-d',$fechamin);
+        $fechamax = strtotime ('-1 year' , strtotime($fechaactual));  
+        $fechamax = date ('Y-m-d',$fechamax);
+
+
+        if (!(($fechain >= $fechamin) && ($fechain <= $fechamax))){
+            
+            return back()->withErrors([
+                'fechanacimiento' => 'Error en la fecha de nacimiento'
+            ]);
+        }
         $request->validate([ 
             'name' => 'required|string|max:255',  
             'dir' => 'required',  
@@ -338,9 +403,8 @@ class ProfileController extends Controller
             'ci' => 'required|numeric', 
             'numhisclinico' => 'required' 
         ]);
-          
-
-
+           
+       
         $paciente=User::create([
             'name' => $request->name,
             'idrol' => $request->idrol,
@@ -371,7 +435,6 @@ class ProfileController extends Controller
             'password' =>  bcrypt($request->cip)
         ]);    
         $paciente->save();
-
         return redirect('/Paciente');
     }
     public function storeenfermera(Request $request)
@@ -429,6 +492,14 @@ class ProfileController extends Controller
  
         return redirect('/Doctor');
     }
+    public function resetpassDoc(Request $request)
+    { 
+        $activo = User::findOrFail($request->id);        
+        $activo->password =  bcrypt($activo->cip);
+        $activo->save(); 
+         
+        return redirect('/Doctor');
+    }
     public function updatePaciente(Request $request)
     { 
         $activo = User::findOrFail($request->id);
@@ -461,6 +532,15 @@ class ProfileController extends Controller
          
         return redirect('/Paciente');
     }
+    public function resetpassPaciente(Request $request)
+    { 
+        $activo = User::findOrFail($request->id);        
+        $activo->password =  bcrypt($activo->cip);
+        $activo->save(); 
+         
+        return redirect('/Paciente');
+    }
+   
     public function updateEnfermera(Request $request)
     { 
         $activo = User::findOrFail($request->id);
@@ -478,6 +558,14 @@ class ProfileController extends Controller
         $activo->genero = $request->genero;    
         $activo->save(); 
  
+        return redirect('/Enfermera');
+    }
+    public function resetpassEnf(Request $request)
+    { 
+        $activo = User::findOrFail($request->id);        
+        $activo->password =  bcrypt($activo->cip);
+        $activo->save(); 
+         
         return redirect('/Enfermera');
     }
     public function deletedoctor(Request $request)
