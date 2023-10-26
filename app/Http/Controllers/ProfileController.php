@@ -36,6 +36,7 @@ class ProfileController extends Controller
         ->where('users.idrol',4) 
         ->where('users.id',Auth::id()) 
         ->where('users.activo',1) 
+        ->with("getmayor")
         ->first(); 
         // Auth::id()
         $raw2=DB::raw('DATE_FORMAT(antecedentes.finembarazoanterior, "%d  %m  %y") as finembarazoanteriorr');  
@@ -65,11 +66,10 @@ class ProfileController extends Controller
             'controles' =>  $controles,
         ]);
     }
-    public function edit(Request $request): Response
+    public function seguridad(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
+        return Inertia::render('Seguridad', [
+            'user' => Auth::user(), 
         ]);
     }
     public function listarEnfermera(Request $request): Response
@@ -624,16 +624,24 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+    { 
+        // if ( Auth::user()->password!=bcrypt($request->passactual)){ 
+        if (\Hash::check($request->passactual, Auth::user()->password)){ 
+            $request->validate([    
+                'password' => 'required',
+                "passwordConfirm" => "required|same:password",
+            ]);
+    
+            $activo = User::findOrFail($request->id); 
+            $activo->password =  bcrypt($request->password);  
+            $activo->save(); 
+            return redirect('/seguridad');
+        }else{
+            return back()->withErrors([
+                'passactual' => 'La contraseña actual no es la correcta.'
+            ]);
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit');
+        
     }
 
     /**

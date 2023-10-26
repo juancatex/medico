@@ -72,6 +72,7 @@ onBeforeMount(() => {
                     </a>
                     <div class="dropdown-menu"> 
                         <!-- <a class="dropdown-item" href="edit-profile.html">Perfil</a>  -->
+                        <Link :href="route('seguridad')" method="get" as="button" class="dropdown-item" >Seguridad</Link> 
                         <Link :href="route('logout')" method="post" as="button" class="dropdown-item" >Salir</Link> 
                     </div>
                 </li> 
@@ -80,6 +81,7 @@ onBeforeMount(() => {
                 <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
                         class="fa-solid fa-ellipsis-vertical"></i></a>
                 <div class="dropdown-menu dropdown-menu-end"> 
+                    <Link :href="route('seguridad')" method="get" as="button" class="dropdown-item" >Seguridad</Link> 
                     <Link :href="route('logout')" method="post" as="button" class="dropdown-item" >Salir</Link> 
                 </div>
             </div>

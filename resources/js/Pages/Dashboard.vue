@@ -3,6 +3,7 @@ import { Head,Link } from '@inertiajs/vue3';
 import Menus from '@/Layouts/Menus.vue'; 
 import {getCurrentInstance,onMounted,watch,ref} from 'vue'; 
 import Pdfgen from '../pdf.js';  
+import Swal from 'sweetalert2';
 const props =defineProps({ 
     time: {
         type: String,
@@ -33,6 +34,15 @@ onMounted(() => {
                 datapdf.value=data;
             });
         } 
+      if(props.paciente!=null){ 
+        if(props.paciente.getmayor instanceof Object){ 
+            setTimeout(function(){
+                Swal.fire({title: 'Atencion!!!!!',
+                icon: 'warning',
+                    text:"Tiene cita programada: "+props.paciente.getmayor.proximacita,icon:'success'});
+            }, 2000);
+        }
+      }
     });
 
 </script>
