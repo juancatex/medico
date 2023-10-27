@@ -9,6 +9,8 @@ import { debounce } from 'lodash';
 const searchField=ref('');
 const modalname=ref(''); 
 const listadotrat=ref({}); 
+const peso=ref(null); 
+const talla=ref(null); 
 const props =defineProps({ 
     lista: {
         type: Object,
@@ -34,6 +36,20 @@ watch(searchField, debounce(() => {
     router.get('/ControlPrenatal', {search: searchField.value}, {preserveState: true, preserveScroll: true, only: ['lista']})
 }, 300));
 
+watch(peso, () => { 
+    form.peso=peso.value;
+    calcularIMC(); 
+} );
+
+function calcularIMC(){
+    console.log("object");
+    if(form.peso!=null&&form.peso>0&&talla.value !=null&&talla.value>0){ 
+            var tallaux=redondeo_valor(talla.value/100)
+            var aux = tallaux*tallaux;
+            form.imc= redondeo_valor(form.peso/aux);  
+    }
+}
+ 
 function openlistado(paciente){ 
     paciente.responsable=true;
     modalname.value=paciente.name;
@@ -64,29 +80,36 @@ function openlistado(paciente){
     });
 }
 
-function validate3(paciente){
-   
-    modalname.value=paciente.name;
-    
-    var url= '/obtenerregistros?id='+paciente.id;
-    axios.get(url).then(function (response) {    
-       if(response.data instanceof Object&&response.data.length>0){
-        console.log(response.data); 
-        paciente.responsable=true;
-       } 
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-}
+ 
 
 function modalregistro(data){  
     modalname.value=data.name;
     form.clearErrors();
     form.reset();   
-    form.iduser=data.id;
-    console.log(form.iduser);
-    $('#resgistrotrat').modal('show'); 
+    form.iduser=data.id; 
+    Swal.fire({
+            title: "Obteniendo los datos...",
+            allowOutsideClick: () => false,
+            allowEscapeKey: () => false,
+            showConfirmButton: false, 
+            showCancelButton: false, 
+            willOpen: function() {
+                Swal.showLoading();
+            }
+        });
+    var url= '/obtenergestacionActual?id='+data.id;
+    axios.get(url).then(function (response) {   
+       Swal.close(); 
+       $('#resgistrotrat').modal('show'); 
+       if(response.data instanceof Object){ 
+        talla.value=response.data.talla
+       } 
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+    
 }
 function modallistado(data){ 
     listadotrat.value = data.data;
@@ -289,7 +312,7 @@ onMounted(() => {
                                                 <div class="col-12 col-md-6 col-xl-3">
                                                     <div class="form-group local-forms">
                                                         <label>Peso <span class="login-danger">*</span></label>
-                                                        <TextInput  min="1" class="form-control" type="number" v-model="form.peso" :class="form.errors.peso?'errorinput':''"></TextInput>
+                                                        <TextInput  min="1" class="form-control" type="number" v-model="peso" :class="form.errors.peso?'errorinput':''"></TextInput>
                                                     </div> 
                                                 </div>
                                                 <div class="col-12 col-md-6 col-xl-3">

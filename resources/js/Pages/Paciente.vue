@@ -279,6 +279,10 @@ onMounted(() => {
                                                 
 
                                                 <td class="text-end">
+                                                    <button  @click="modalupdatecopy(paciente)"
+                                                                            class="btn btn-sm btn-white text-warning me-2"><i
+                                                                                class="far fa-copy me-1"></i>Copiar</button>
+
                                                                         <button v-if="paciente.activo" @click="modalupdate(paciente)"
                                                                             class="btn btn-sm btn-white text-success me-2"><i
                                                                                 class="far fa-edit me-1"></i> Editar</button>
@@ -288,9 +292,7 @@ onMounted(() => {
                                                                             class="btn btn-sm btn-white text-danger"><i
                                                                                 class="far fa-window-close me-1"></i>Inactivar</button>
 
-                                                                        <button v-else @click="modalupdatecopy(paciente)"
-                                                                            class="btn btn-sm btn-white text-warning"><i
-                                                                                class="far fa-copy me-1"></i>Copiar</button>
+                                                                        
                                                 </td>
                                             </tr> 
                                         </tbody>

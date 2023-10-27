@@ -1191,9 +1191,9 @@ var diabetesf=antecedentes.diabetesf; //diabetesf
                 doc.text(element.tratamientos.toString(),12,posy); 
                 doc.setFontSize(9);
             }
-            if(element.matricula!=null){ 
+            if(element.name!=null){ 
                 doc.setFontSize(5);
-                doc.text(element.matricula.toString(),17.8,posy);  
+                doc.text("Dr. "+element.name.toString().split(" ")[0],17.7,posy-0.05);  
             }
             if(element.proximacitaa!=null){ 
                 doc.setFontSize(9);

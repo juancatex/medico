@@ -147,9 +147,9 @@ class ProfileController extends Controller
             ]
         ];
         $fechaactual = date('Y-m-d'); 
-        $fechamin = strtotime ('-1 year' , strtotime($fechaactual));  
+        $fechamin = strtotime ('-9 year' , strtotime($fechaactual));  
         $fechamin = date ('Y-m-d',$fechamin);
-        $fechamax = strtotime ('-40 year' , strtotime($fechaactual));  
+        $fechamax = strtotime ('-55 year' , strtotime($fechaactual));  
         $fechamax = date ('Y-m-d',$fechamax);
         return Inertia::render('Paciente', [ 
             'lista' =>  $pacientes,
@@ -372,9 +372,9 @@ class ProfileController extends Controller
     { 
         $fechain = date('Y-m-d',strtotime($request->fechanacimiento. " 00:00:00")); 
         $fechaactual = date('Y-m-d'); 
-        $fechamin = strtotime ('-40 year' , strtotime($fechaactual));  
+        $fechamin = strtotime ('-55 year' , strtotime($fechaactual));  
         $fechamin = date ('Y-m-d',$fechamin);
-        $fechamax = strtotime ('-1 year' , strtotime($fechaactual));  
+        $fechamax = strtotime ('-9 year' , strtotime($fechaactual));  
         $fechamax = date ('Y-m-d',$fechamax);
 
 
