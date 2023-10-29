@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('antecedentes', function (Blueprint $table) {
             $table->increments('idantecedente');
             $table->BigInteger('iduser')->unsigned();
+            $table->date('fecha')->default(DB::raw('CURRENT_DATE'));
 
             $table->boolean('tbcf')->nullable()->comment('0=no,1=si'); 
             $table->boolean('tbcp')->nullable()->comment('0=no,1=si'); 

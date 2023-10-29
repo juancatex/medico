@@ -437,14 +437,9 @@ onMounted(() => {
                                                     </select> 
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 col-xl-4">
-                                            <div class="form-group local-forms">
-                                                <label>Años en el mayor nivel <span class="login-danger">*</span></label>
-                                                <TextInput class="form-control" type="number" v-model="form.nivelanios" :class="form.errors.nivelanios?'errorinput':''"></TextInput>
-                                            </div>
-                                        </div>
+                                       
  
-                                        <div class="col-12 col-md-6 col-xl-3" >
+                                        <div class="col-12 col-md-6 col-xl-4" >
                                             <div class="form-group select-gender" :class="form.errors.genero?'errorinput':''">
                                                 <label class="gen-label">Estudios<span
                                                         class="login-danger">*</span></label>
@@ -468,6 +463,12 @@ onMounted(() => {
                                                             <TextInput class="form-check-input mt-0" name="estudios" value="3" type="radio" v-model="form.estudios" :checked="form.estudios==3"/>Universidad 
                                                     </label>
                                                 </div> 
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 col-xl-3">
+                                            <div class="form-group local-forms">
+                                                <label>Años en el mayor nivel <span class="login-danger">*</span></label>
+                                                <TextInput class="form-control" type="number" v-model="form.nivelanios" :class="form.errors.nivelanios?'errorinput':''"></TextInput>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 col-xl-3"  >

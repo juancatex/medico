@@ -36,8 +36,7 @@
 <script src="assets/plugins/datatables/datatables.min.js"></script>
 <script src="assets/js/jquery.waypoints.js"></script>
 <script src="assets/js/jquery.counterup.min.js"></script>
-<script src="assets/plugins/apexchart/apexcharts.min.js"></script>
-<script src="assets/plugins/apexchart/chart-data.js"></script>
+<script src="assets/plugins/apexchart/apexcharts.min.js"></script> 
 <script src="assets/js/app.js"></script>
     </body>
 </html>

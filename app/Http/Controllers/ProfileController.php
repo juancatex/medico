@@ -54,8 +54,50 @@ class ProfileController extends Controller
        })
        ->where('control_prenatals.iduser', Auth::id())
        ->orderBy('control_prenatals.idprenat', 'asc')->get();   
+       
+       $embarazopla=[
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',1)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',2)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',3)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',4)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',5)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',6)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',7)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',8)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',8)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',10)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',11)->count(), 
+       Antecedente::where('embarazoplaneado',0)->whereRaw('MONTH(fecha)=?',12)->count()];
+       $embarazonopla=[
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',1)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',2)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',3)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',4)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',5)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',6)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',7)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',8)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',8)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',10)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',11)->count(), 
+       Antecedente::where('embarazoplaneado',1)->whereRaw('MONTH(fecha)=?',12)->count()];
 
-         
+       $metodos=[
+        Antecedente::where('fracasometodo',0)->count(),
+        Antecedente::where('fracasometodo',1)->count(),
+        Antecedente::where('fracasometodo',2)->count(),
+        Antecedente::where('fracasometodo',3)->count(),
+        Antecedente::where('fracasometodo',4)->count(),
+        Antecedente::where('fracasometodo',5)->count()
+       ];
+       
+       $totaldoctor=User::where('users.idrol',2)  
+       ->where('users.activo',1)->count(); 
+       $totalenfer=User::where('users.idrol',3)  
+       ->where('users.activo',1)->count(); 
+       $totalpaci=User::where('users.idrol',4)  
+       ->where('users.activo',1)->count(); 
+
         $now = Carbon::now(); 
         return Inertia::render('Dashboard',[
             'time'=>$now->format('A'),
@@ -64,6 +106,12 @@ class ProfileController extends Controller
             'ante' =>  $ante, 
             'gest' =>  $gest, 
             'controles' =>  $controles,
+            'embarazopla' =>  $embarazopla,
+            'embarazonopla' =>  $embarazonopla,
+            'metodos' =>  $metodos,
+            'totaldoctor' =>  $totaldoctor,
+            'totalenfer' =>  $totalenfer,
+            'totalpaci' =>  $totalpaci,
         ]);
     }
     public function seguridad(Request $request): Response

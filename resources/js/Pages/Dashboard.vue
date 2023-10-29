@@ -23,9 +23,113 @@ const props =defineProps({
     controles: {
         type: Object,
     },
+    embarazopla: {
+        type: Object,
+    },
+    embarazonopla: {
+        type: Object,
+    },
+    metodos: {
+        type: Object,
+    },
+    totaldoctor: {
+        type: Number,
+    },
+    totalenfer: {
+        type: Number,
+    },
+    totalpaci: {
+        type: Number,
+    },
 });
 const componentName = getCurrentInstance()?.type.__name
 const datapdf=ref(''); 
+function charts(){
+    console.log(props.embarazopla);
+    if ($('#patient-chart').length > 0) {
+        var sColStacked = {
+            chart: {
+                height: 230,
+                type: 'bar',
+                stacked: true,
+                toolbar: {
+                    show: false,
+                }
+            },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    legend: {
+                        position: 'bottom',
+                        offsetX: -10,
+                        offsetY: 0
+                    }
+                }
+            }],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '15%'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            series: [{
+                name: 'Planeado',
+                color: '#2E37A4',
+                data: props.embarazopla
+            }, {
+                name: 'No planeado',
+                color: '#00D3C7',
+                data: props.embarazonopla
+            }],
+            xaxis: {
+                categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            },
+        }
+        var chart = new ApexCharts(document.querySelector("#patient-chart"), sColStacked);
+        chart.render();
+    }
+    if ($('#donut-chart-dash').length > 0) {
+        var donutChart = {
+            chart: {
+                height: 290,
+                type: 'donut',
+                toolbar: {
+                    show: false,
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '50%'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            series: props.metodos,
+            labels: ['No usaba', 'Barrera', 'DIU', 'Hormonal', 'Emergencia','Tradicional'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            legend: {
+                position: 'bottom',
+            }
+        }
+        var donut = new ApexCharts(document.querySelector("#donut-chart-dash"), donutChart);
+        donut.render();
+    }
+}
 onMounted(() => { 
       console.log(componentName);
       datapdf.value='';
@@ -43,6 +147,7 @@ onMounted(() => {
             }, 2000);
         }
       }
+      charts();
     });
 
 </script>
@@ -78,60 +183,69 @@ onMounted(() => {
             </div>
         </div>
         <div v-if="user.idrol<4" class="row">
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-4">
                         <div class="dash-widget">
                             <div class="dash-boxs comman-flex-center">
-                                <img src="assets/img/icons/calendar.svg" alt="">
+                                <img src="assets/img/icons/health-img.svg" alt="">
                             </div>
                             <div class="dash-content dash-count">
-                                <h4>Appointments</h4>
-                                <h2><span class="counter-up">250</span></h2>
-                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>40%</span> vs
-                                    last month</p>
+                                <h4>Doctores</h4>
+                                <h2><span class="counter-up">{{totaldoctor}}</span></h2>
+                               
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-4">
                         <div class="dash-widget">
                             <div class="dash-boxs comman-flex-center">
                                 <img src="assets/img/icons/profile-add.svg" alt="">
                             </div>
                             <div class="dash-content dash-count">
-                                <h4>New Patients</h4>
-                                <h2><span class="counter-up">140</span></h2>
-                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>20%</span> vs
-                                    last month</p>
+                                <h4>Enfermeros</h4>
+                                <h2><span class="counter-up">{{totalenfer}}</span></h2>
+                                
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-4">
                         <div class="dash-widget">
                             <div class="dash-boxs comman-flex-center">
-                                <img src="assets/img/icons/scissor.svg" alt="">
+                                <img src="assets/img/icons/profile-user.svg" alt="">
                             </div>
                             <div class="dash-content dash-count">
-                                <h4>Operations</h4>
-                                <h2><span class="counter-up">56</span></h2>
-                                <p><span class="negative-view"><i class="feather-arrow-down-right me-1"></i>15%</span>
-                                    vs last month</p>
+                                <h4>Pacientes</h4>
+                                <h2><span class="counter-up">{{totalpaci}}</span></h2>
+                              
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
-                        <div class="dash-widget">
-                            <div class="dash-boxs comman-flex-center">
-                                <img src="assets/img/icons/empty-wallet.svg" alt="">
-                            </div>
-                            <div class="dash-content dash-count">
-                                <h4>Earnings</h4>
-                                <h2>$<span class="counter-up"> 20,250</span></h2>
-                                <p><span class="passive-view"><i class="feather-arrow-up-right me-1"></i>30%</span> vs
-                                    last month</p>
-                            </div>
-                        </div>
-                    </div>
+                   
         </div>
-        <div v-else class="row">
+        <div v-if="user.idrol<4" class="row">
+                    <div class="col-12 col-md-12 col-lg-6 col-xl-9">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="chart-title patient-visit">
+                                    <h4>Embarazos planeados</h4> 
+                                </div>
+                                <div id="patient-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-6 col-xl-3 d-flex">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="chart-title">
+                                    <h4>Metodo con mas fracasos</h4>
+                                </div>
+                                <div id="donut-chart-dash" class="chart-user-icon">
+                                    <img src="assets/img/icons/user-icon.svg" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <div v-if="user.idrol==4" class="row">
                     <div class="col-sm-12">
                         <div class="card card-table show-entire">
                             <div class="card-body"> 
